@@ -6,9 +6,9 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import apexsimulatorextended.Instructions;
+import apexsimulatorextended.ROB;
 
-public final class CircularQueue extends AbstractCollection<Instructions> {
+public final class CircularQueue extends AbstractCollection<ROB> {
 
   private static final int MAX_CAPACITY = 16;
   private static final int DEFAULT_CAPACITY = 16;
@@ -24,7 +24,7 @@ public final class CircularQueue extends AbstractCollection<Instructions> {
   // we mask with capacity -1.  This variable caches that values
   private int bitmask; 
 
-  private Instructions[] q;
+  private ROB[] q;
 
   public CircularQueue() {
     this(DEFAULT_CAPACITY);
@@ -52,14 +52,14 @@ public final class CircularQueue extends AbstractCollection<Instructions> {
     for (maxCapacity = 1; maxCapacity < mc; maxCapacity <<= 1) ;
 
     bitmask = capacity - 1;
-    q = new Instructions[capacity];
+    q = new ROB[capacity];
   }
 
   public int getNextSlotIndex() {
 	  return producerIndex;
   }
 
-  public boolean add(Instructions obj) {
+  public boolean add(ROB obj) {
     if (size == capacity) {
       // no room
       return false;
@@ -77,8 +77,8 @@ public final class CircularQueue extends AbstractCollection<Instructions> {
 	  return consumerIndex;
   }
 
-  public Instructions remove() {
-    Instructions obj;
+  public ROB remove() {
+    ROB obj;
     
     if (size == 0) return null;
     
@@ -125,8 +125,8 @@ public final class CircularQueue extends AbstractCollection<Instructions> {
     return s.toString();
   }
 
-  public Iterator<Instructions> iterator() {
-    return new Iterator<Instructions>() {
+  public Iterator<ROB> iterator() {
+    return new Iterator<ROB>() {
       private final int ci = consumerIndex;
       private final int pi = producerIndex;
       private int s = size;
@@ -137,12 +137,12 @@ public final class CircularQueue extends AbstractCollection<Instructions> {
         return s > 0;
       }
 
-      public Instructions next() {
+      public ROB next() {
         checkForModification();
         if (s == 0) throw new NoSuchElementException();
     
         s--;
-        Instructions r = q[i];
+        ROB r = q[i];
         i = (i + 1) & bitmask;
 
         return r;

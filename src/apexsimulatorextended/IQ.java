@@ -19,6 +19,6 @@ public class IQ {
    String src1Tag;
    String src2Tag;
    String destination;
-   boolean isEmpty;
-   
+   Instructions ins;  
+   int literal;
 }
