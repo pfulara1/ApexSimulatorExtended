@@ -161,4 +161,8 @@ public CircularQueue() {
       }
     };
   }
+
+public void setQ(ROB[] q) {
+	this.q = q;
+}
 }

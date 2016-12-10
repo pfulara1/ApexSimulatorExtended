@@ -21,6 +21,7 @@ public class Instructions {
     String instructionString = "";
     int result;
     String physicalDestRegister = "";
+    int pc_value;
     /*
     This method is used for parsing the instruction string and convert it to a instruction class object & return that object 
     */
