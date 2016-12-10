@@ -36,8 +36,7 @@ public class ApexSimulatorExtended {
 	final static String execute1 = "execute1", execute2 = "execute2";
 	final static String multiply = "multiply", LSFU1 = "LSFU1", LSFU2 = "LSFU2";
 	final static String branchALU1 = "branchALU1";
-	final static String writeALU = "writeALU", writeMultiply = "writeMultiply",
-	writeLSFU = "writeLSFU", writeBranch = "writeBranch";
+	final static String writeALU = "writeALU", writeMultiply = "writeMultiply", writeLSFU = "writeLSFU", writeBranch = "writeBranch";
 	public static int ZeroFlag = 0;
 	public static boolean HALTFLAG = false;
 	public static int programCounter = 4000;
@@ -65,6 +64,8 @@ public class ApexSimulatorExtended {
 	public static int resultLSFU;
 	public static int literal_zero=0000;
 	public static int source1ALU, source2ALU,source1MUL,source2MUL,source1Branch,source2Branch,source1LSFU,source2LSFU;
+        public static int counter=0;
+        public static boolean branchStall=false;
 	/*
 	 * This function take the file path as a argument read the file line by line
 	 * and put the instructions in an Hash Map
@@ -144,14 +145,14 @@ public class ApexSimulatorExtended {
 			}
 			 WriteBackALU();
 			 WriteBackLSFU();
-			// WriteBackMUL();
+			 WriteBackMUL();
 			 Commit();
-			// ExecuteMul();
+			 ExecuteMul();
 			 ExecuteLSFU2();
 			 ExecuteLSFU1();
 			 ExecuteAlu2();
 			 ExecuteAlu1();
-			// Branch();
+			 Branch();
 			 Decode2();
 			 Decode1();
 			 FetchStage();
@@ -770,6 +771,99 @@ public class ApexSimulatorExtended {
 			pipeline.put(LSFU1, null);			
 		}
 	}
+        
+                public static void ExecuteMul()
+        {
+             if (!issueQueue.isEmpty()) {
+			IQ iq;
+			index = issueQueue.size();
+			for (int i = 0; i < index; i++) {
+				iq = issueQueue.get(index - 1);
+				if (iq.fuType == 2 && iq.src1Valid == true
+						&& iq.src2Valid == true) {
+                                       issueQueue.remove(i);
+				       counter--;
+                                       if(counter==0){
+                                                source1MUL=iq.valuesrc1;
+						source2MUL=iq.valuesrc2;
+                                                iq.ins.result=source1MUL*source2MUL;
+                                                  if ( iq.ins.result == 0) {
+                                                  ZeroFlag = 1;
+                                                } else {
+                                               ZeroFlag = 0;
+                                                  }
+			
+                                                updateIQ(iq.ins.result,iq.ins);
+                                                	        					
+                                       }
+                                       pipeline.put(multiply, iq.ins);
+                                }
+                        }
+            }
+        }
+           
+        
+        public static void Branch()
+      {
+        if (!issueQueue.isEmpty()){
+          
+                if (branchStall == false) {
+                    isStall = false;
+                     IQ iq;
+			index = issueQueue.size();
+			for (int i = 0; i < index; i++) {
+				iq = issueQueue.get(index - 1);
+				if (iq.fuType == 4 && iq.src1Valid == true
+						&& iq.src2Valid == true) {
+                                       issueQueue.remove(i);
+                        switch (iq.ins.opcode) {
+
+                        case "BZ":
+                            if (ZeroFlag == 1) {
+                                //Instruction flushed at fetch and decode    
+                                int offset = iq.ins.literal;
+                                int pcValueForBranch = BranchPcValue;
+                                programCounter = pcValueForBranch + offset;
+                                BranchPcValue = 0;
+                                BranchTaken = true;
+
+                            }
+                            break;
+                        case "BNZ":
+                            if (ZeroFlag != 1) {
+                                //Instruction flushed at fetch and decode    
+                                int offset = iq.ins.literal;
+                                int pcValueForBranch = BranchPcValue;
+                                programCounter = pcValueForBranch + offset;
+                                BranchPcValue = 0;
+                                BranchTaken = true;
+
+                            }
+                            break;
+                        case "JUMP":
+                            //Flush out the Instruction in fetch and decode
+                            int registerValue = 0;
+                            registerValue = unifiedRegisterFile.get(iq.ins.src1Register);
+                            
+                            programCounter = registerValue + iq.ins.literal;
+                            BranchTaken = true;
+                            break;
+                        case "BAL":
+                            int Value = 0;
+                            unifiedRegisterFile.put("X", NextInstructionBAL);
+                            Value=iq.valuesrc1;
+                            programCounter = Value + iq.ins.literal;
+                            BranchTaken = true;
+                            break;
+                                                 
+                    }
+                } else {
+                    isStall = true;
+      }
+                        }
+                }
+        }
+      }
 
 	
 	public static void Commit() {
@@ -786,7 +880,7 @@ public class ApexSimulatorExtended {
 		
 	}
 	
-	static void updateROB(int result, Instructions ins){
+	public static void updateROB(int result, Instructions ins){
 		ROB rob_array[] = null;
 		rob_array = ROB.getQ();
 		int headIndex = rob_array.length;
@@ -800,7 +894,7 @@ public class ApexSimulatorExtended {
 		ROB.setQ(rob_array);
 	}
 	
-	static void updateIQ(int result, Instructions ins){
+	public static void updateIQ(int result, Instructions ins){
 		for(int i=0;i<issueQueue.size();i++){
 			Instructions IQins=issueQueue.get(i).ins;
 			if(IQins.opcode.equals("MOVC")&&IQins.src1Register.equals(ins.destRegister)){
@@ -845,6 +939,21 @@ public class ApexSimulatorExtended {
 			pipeline.put(LSFU2, null);
 		}
 	}
+        
+        public static void WriteBackMUL()
+        {
+         if(pipeline.get(multiply)!=null && counter==0)
+         {
+                        counter=4;
+                        Instructions ins=pipeline.get(multiply);
+			pipeline.put(writeMultiply, ins);
+			unifiedRegisterFile.put(ins.physicalDestRegister, ins.result);
+			allocationList.add(ins.physicalDestRegister);
+			renameTable.get(ins.destRegister).valid=true;                
+         }
+            
+        }
+        
 	public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
 		for (Entry<T, E> entry : map.entrySet()) {
 			String temp = (String) entry.getValue();

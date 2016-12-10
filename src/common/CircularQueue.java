@@ -29,6 +29,10 @@ public final class CircularQueue {
 	return q;
 }
 
+public void setQ(ROB[] q) {
+	this.q = q;
+}
+  
 public CircularQueue() {
     this(DEFAULT_CAPACITY);
   }
@@ -161,8 +165,4 @@ public CircularQueue() {
       }
     };
   }
-
-public void setQ(ROB[] q) {
-	this.q = q;
-}
 }
