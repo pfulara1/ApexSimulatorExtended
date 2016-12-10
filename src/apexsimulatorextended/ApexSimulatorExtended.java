@@ -164,6 +164,9 @@ public class ApexSimulatorExtended {
 	public static void FetchStage() {
 		if (BranchTaken == true) {
 			BranchTaken = false;
+                        
+                            pipeline.put(fetch, null);
+                        
 		} else if (isStall == false && HALTFLAG == false) {
 
 			String ins = InstructionMap.get(programCounter);
@@ -192,6 +195,10 @@ public class ApexSimulatorExtended {
 
 			}
 		}
+                  else if(BranchTaken==true)
+                        {
+                            pipeline.put(decode1, null);
+                        }
 	}
 
 	public static void Decode2() {
@@ -615,6 +622,10 @@ public class ApexSimulatorExtended {
 				}
 
 			}
+                        else if(BranchTaken==true)
+                        {
+                            pipeline.put(decode2, null);
+                        }
 
 		}
 	}
@@ -668,37 +679,37 @@ public class ApexSimulatorExtended {
 				result=source1ALU+source2ALU;
 				ins.result=result;
 				updateIQ(result,ins);
-				updateROB(result, ins);
+				updateROB(result, ins,false);
 				break;
 			case "SUB":
 				result=source1ALU-source2ALU;
 				ins.result=result;
 				updateIQ(result,ins);
-				updateROB(result, ins);
+				updateROB(result, ins,false);
 				break;
 			case "AND":
 				result=source1ALU&source2ALU;
 				ins.result=result;
 				updateIQ(result,ins);
-				updateROB(result, ins);
+				updateROB(result, ins,false);
 				break;
 			case "OR":
 				result=source1ALU|source2ALU;
 				ins.result=result;
 				updateIQ(result,ins);
-				updateROB(result, ins);
+				updateROB(result, ins,false);
 				break;
 			case "EX-OR":
 				result=source1ALU^source2ALU;
 				ins.result=result;
 				updateIQ(result,ins);
-				updateROB(result, ins);
+				updateROB(result, ins,false);
 				break;
 			case "MOVC":
 				result=literal_zero+source1ALU;
 				ins.result=result;
 				updateIQ(result, ins);
-				updateROB(result, ins);
+				updateROB(result, ins,false);
 				break;
 			}
 			
@@ -759,7 +770,7 @@ public class ApexSimulatorExtended {
 				memoryResult = memory[resultLSFU];
 				ins.result = memoryResult;
 				updateIQ(memoryResult, ins);
-				updateROB(memoryResult, ins);
+				updateROB(memoryResult, ins,false);
 				break;
 			case "STORE":
 				memoryResult = memory[resultLSFU];
@@ -794,6 +805,7 @@ public class ApexSimulatorExtended {
                                                   }
 			
                                                 updateIQ(iq.ins.result,iq.ins);
+                                                updateROB(iq.ins.result,iq.ins,false);
                                                 	        					
                                        }
                                        pipeline.put(multiply, iq.ins);
@@ -826,6 +838,7 @@ public class ApexSimulatorExtended {
                                 programCounter = pcValueForBranch + offset;
                                 BranchPcValue = 0;
                                 BranchTaken = true;
+                                updateROB(0, iq.ins,true);
 
                             }
                             break;
@@ -837,6 +850,7 @@ public class ApexSimulatorExtended {
                                 programCounter = pcValueForBranch + offset;
                                 BranchPcValue = 0;
                                 BranchTaken = true;
+                                updateROB(0, iq.ins,true);
 
                             }
                             break;
@@ -847,6 +861,7 @@ public class ApexSimulatorExtended {
                             
                             programCounter = registerValue + iq.ins.literal;
                             BranchTaken = true;
+                             updateROB(0, iq.ins,true);
                             break;
                         case "BAL":
                             int Value = 0;
@@ -854,7 +869,9 @@ public class ApexSimulatorExtended {
                             Value=iq.valuesrc1;
                             programCounter = Value + iq.ins.literal;
                             BranchTaken = true;
+                            updateROB(0, iq.ins,true);
                             break;
+                            
                                                  
                     }
                 } else {
@@ -880,7 +897,7 @@ public class ApexSimulatorExtended {
 		
 	}
 	
-	public static void updateROB(int result, Instructions ins){
+	public static void updateROB(int result, Instructions ins,boolean isBranchTaken){
 		ROB rob_array[] = null;
 		rob_array = ROB.getQ();
 		int headIndex = rob_array.length;
@@ -888,6 +905,7 @@ public class ApexSimulatorExtended {
 			if(rob_array[i].pc==ins.pc_value){
 				rob_array[i].value=ins.result;
 				rob_array[i].isValid=true;
+                                rob_array[i].isBranchTaken=isBranchTaken;
 				break;
 			}
 		}
