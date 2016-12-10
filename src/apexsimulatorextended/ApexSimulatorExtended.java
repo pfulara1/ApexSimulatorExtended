@@ -63,7 +63,7 @@ public class ApexSimulatorExtended {
 	static int index = 0;
 	public static int source1, source2;
 	public static int literal_zero=0000;
-
+	public static int source1ALU, source2ALU,source1MUL,source2MUL,source1Branch,source2Branch,source1LSFU,source2LSFU;
 	/*
 	 * This function take the file path as a argument read the file line by line
 	 * and put the instructions in an Hash Map
@@ -230,6 +230,7 @@ public class ApexSimulatorExtended {
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
+							issue.ins.physicalDestRegister = rt.physicalRegister;
 							issue.ins = ins;
 							issueQueue.add(issue);
 
@@ -674,27 +675,33 @@ public class ApexSimulatorExtended {
 			int result;
 			switch(opcode){
 			case "ADD":
-				result=source1+source2;
+				result=source1ALU+source2ALU;
+				ins.result=result;
 				updateIQ(result,ins);
 				break;
 			case "SUB":
-				result=source1-source2;
+				result=source1ALU-source2ALU;
+				ins.result=result;
 				updateIQ(result,ins);
 				break;
 			case "AND":
-				result=source1&source2;
+				result=source1ALU&source2ALU;
+				ins.result=result;
 				updateIQ(result,ins);
 				break;
 			case "OR":
-				result=source1|source2;
+				result=source1ALU|source2ALU;
+				ins.result=result;
 				updateIQ(result,ins);
 				break;
 			case "EX-OR":
-				result=source1^source2;
+				result=source1ALU^source2ALU;
+				ins.result=result;
 				updateIQ(result,ins);
 				break;
 			case "MOVC":
-				result=literal_zero+source1;
+				result=literal_zero+source1ALU;
+				ins.result=result;
 				updateIQ(result, ins);
 				break;
 			}
@@ -724,16 +731,34 @@ public class ApexSimulatorExtended {
 			Instructions IQins=issueQueue.get(i).ins;
 			if(IQins.opcode.equals("MOVC")&&IQins.src1Register.equals(ins.destRegister)){
 				issueQueue.get(i).valuesrc1=result;
+				issueQueue.get(i).src1Valid=true;
 				break;
 			}
 			if(IQins.src1Register.equalsIgnoreCase(ins.destRegister)){
 				issueQueue.get(i).valuesrc1=result;
+				issueQueue.get(i).src1Valid=true;
 			}
 			if(IQins.src2Register.equalsIgnoreCase(ins.destRegister)){
 				issueQueue.get(i).valuesrc2=result;
+				issueQueue.get(i).src2Valid=true;
 				break;
 			}
 		}
+	}
+	
+	static void updateROB(int result, Instructions ins){
+		ROB rob_array[] = null;
+		rob_array = ROB.getQ();
+	}
+	static void WriteBackALU(){
+		if(pipeline.get(execute2)!=null){
+			Instructions ins=pipeline.get(execute2);
+			pipeline.put(writeALU, ins);
+			unifiedRegisterFile.put(ins.physicalDestRegister, ins.result);
+			allocationList.add(ins.physicalDestRegister);
+			renameTable.get(ins.physicalDestRegister).valid=true;
+			
+		}	
 	}
 	public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
 		for (Entry<T, E> entry : map.entrySet()) {

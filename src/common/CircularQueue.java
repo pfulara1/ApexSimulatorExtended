@@ -1,6 +1,5 @@
 package common;
 
-import java.util.AbstractCollection;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -8,7 +7,7 @@ import java.util.NoSuchElementException;
 
 import apexsimulatorextended.ROB;
 
-public final class CircularQueue extends AbstractCollection<ROB> {
+public final class CircularQueue {
 
   private static final int MAX_CAPACITY = 16;
   private static final int DEFAULT_CAPACITY = 16;

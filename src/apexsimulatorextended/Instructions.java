@@ -19,7 +19,8 @@ public class Instructions {
     boolean checkliteral = false;
     int literal = 0;
     String instructionString = "";
-
+    int result;
+    String physicalDestRegister = "";
     /*
     This method is used for parsing the instruction string and convert it to a instruction class object & return that object 
     */
