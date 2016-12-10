@@ -15,5 +15,6 @@ public class ROB {
     int value;
     boolean isValid;
     int pc;
-    
+    boolean isBranchTaken;
+    int memoryAddressForStore;
 }
