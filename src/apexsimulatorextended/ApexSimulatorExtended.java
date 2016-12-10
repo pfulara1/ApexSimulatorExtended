@@ -770,11 +770,11 @@ public class ApexSimulatorExtended {
 				memoryResult = memory[resultLSFU1];
 				ins.result = memoryResult;
 				updateIQ(memoryResult, ins);
-				updateROB(memoryResult, ins);
+				updateROB(memoryResult, ins, false);
 				break;
 			case "STORE":
 				ins.result = source1LSFU;
-				updateROB(resultLSFU1, ins);
+				updateROB(resultLSFU1, ins, false);
 				break;
 			}
 
@@ -897,7 +897,7 @@ public class ApexSimulatorExtended {
 
 	}
 
-	public static void updateROB(int result, Instructions ins,boolean isBranchTaken){
+	public static void updateROB(int result, Instructions ins, boolean isBranchTaken){
 		ROB rob_array[] = null;
 		rob_array = ROB.getQ();
 		int headIndex = rob_array.length;
