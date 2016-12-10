@@ -45,6 +45,7 @@ public class ApexSimulatorExtended {
 	public static HashMap<Integer, String> InstructionMap = new HashMap<Integer, String>();
 	public static LinkedHashMap<String, Integer> unifiedRegisterFile = new LinkedHashMap<String, Integer>();
 	public static LinkedHashMap<String, RenameTable> renameTable = new LinkedHashMap<String, RenameTable>();
+	public static LinkedHashMap<String, String> r_rat = new LinkedHashMap<String, String>();
 	public static int memory[] = new int[4000];
 	public static Scanner sc = new Scanner(System.in);
 	public static int sizeUrf = 32;
@@ -61,7 +62,7 @@ public class ApexSimulatorExtended {
 	public static final int LSFU = 3;
 	public static final int Branch = 4;
 	static int index = 0;
-	public static int source1, source2;
+	public static int resultLSFU;
 	public static int literal_zero=0000;
 	public static int source1ALU, source2ALU,source1MUL,source2MUL,source1Branch,source2Branch,source1LSFU,source2LSFU;
 	/*
@@ -142,12 +143,12 @@ public class ApexSimulatorExtended {
 				break;
 			}
 			// WriteBackALU();
-			// WriteBackLSFU();
+			 WriteBackLSFU();
 			// WriteBackMUL();
 			 Commit();
 			// ExecuteMul();
-			// ExecuteLSFU2();
-			// ExecuteLSFU1();
+			 ExecuteLSFU2();
+			 ExecuteLSFU1();
 			 ExecuteAlu2();
 			 ExecuteAlu1();
 			// Branch();
@@ -453,6 +454,8 @@ public class ApexSimulatorExtended {
 						}
 						break;
 					case "MOVC":
+						if (!allocationList.isEmpty()
+								&& issueQueue.size() != 12 && ROB.size() != 40) {
 						// Renaming Logic
 						rt.physicalRegister = allocationList.poll().toString();
 						rt.valid = false;
@@ -472,7 +475,9 @@ public class ApexSimulatorExtended {
 						rob.isValid = false;
 						rob.physicalRegister = rt.physicalRegister;
 						ROB.add(rob);
-
+						} else {
+							isStall = true;
+						}
 						break;
 					case "LOAD":
 						if (!allocationList.isEmpty()
@@ -627,8 +632,8 @@ public class ApexSimulatorExtended {
 					case "AND":
 					case "OR":
 					case "EX-OR":
-						source1=iq.valuesrc1;
-						source2=iq.valuesrc2;
+						source1ALU=iq.valuesrc1;
+						source2ALU=iq.valuesrc2;
 						pipeline.put(execute1, iq.ins);
 						issueQueue.remove(i);
 						break;
@@ -636,7 +641,7 @@ public class ApexSimulatorExtended {
 					break;
 				} 
 				else if (iq.fuType == 1 && iq.ins.opcode.equals("MOVC")) {
-				source1=iq.literal;
+				source1ALU=iq.literal;
 				pipeline.put(execute1, iq.ins);
 				issueQueue.remove(i);
 				break;
@@ -702,6 +707,68 @@ public class ApexSimulatorExtended {
 		}
 	}
 	
+	public static void ExecuteLSFU1() {
+		
+		if (!issueQueue.isEmpty()) {
+			IQ iq;
+			index = issueQueue.size();
+			for (int i = 0; i < index; i++) {
+				iq = issueQueue.get(index - 1);
+				if (iq.fuType == 3 && iq.src1Valid == true && iq.src2Valid == true) {
+					switch (iq.ins.opcode) {
+					case "LOAD":
+						source1LSFU=iq.valuesrc1;
+						source2LSFU=iq.valuesrc2;
+						resultLSFU = source1LSFU + source2LSFU;
+						pipeline.put(LSFU1, iq.ins);
+						issueQueue.remove(i);
+						break;
+					case "STORE":
+						source1LSFU=iq.valuesrc1;
+						source2LSFU=iq.literal;
+						resultLSFU = source1LSFU + source2LSFU;
+						pipeline.put(LSFU1, iq.ins);
+						issueQueue.remove(i);
+						break;
+					}
+					break;
+				} 
+				else 
+				{
+					index--;
+				}
+				
+			}
+		}
+		
+	}
+	
+	public static void ExecuteLSFU2() {
+		
+		if(pipeline.get(LSFU1)!=null)
+		{
+			Instructions ins=pipeline.get(LSFU1);
+			
+			String opcode=ins.opcode;
+			int memoryResult;
+			switch(opcode)
+			{
+			case "LOAD":
+				memoryResult = memory[resultLSFU];
+				updateIQ(memoryResult, ins);
+				updateROB(memoryResult, ins);
+				break;
+			case "STORE":
+				memoryResult = memory[resultLSFU];
+				break;
+			}
+			
+			pipeline.put(LSFU2, ins);
+			pipeline.put(LSFU1, null);			
+		}
+	}
+
+	
 	public static void Commit() {
 		
 		ROB rob_array[] = null;
@@ -711,6 +778,7 @@ public class ApexSimulatorExtended {
 		if(rob != null && rob.isValid)
 		{
 			unifiedRegisterFile.put(rob.destinationRegsiter, rob.value);
+			r_rat.put(rob.destinationRegsiter, rob.physicalRegister);
 		}
 		
 	}
@@ -735,7 +803,7 @@ public class ApexSimulatorExtended {
 		}
 	}
 	
-	static void updateROB(int result, Instructions ins){
+	public static void updateROB(int result, Instructions ins){
 		ROB rob_array[] = null;
 		rob_array = ROB.getQ();
 		int headIndex = ROB.getHeadIndex();
@@ -747,7 +815,8 @@ public class ApexSimulatorExtended {
 			}
 		}
 	}
-	static void WriteBackALU(){
+	
+	public static void WriteBackALU(){
 		if(pipeline.get(execute2)!=null){
 			Instructions ins=pipeline.get(execute2);
 			pipeline.put(writeALU, ins);
@@ -756,6 +825,16 @@ public class ApexSimulatorExtended {
 			renameTable.get(ins.physicalDestRegister).valid=true;
 			
 		}	
+	}
+	
+	public static void WriteBackLSFU() {
+		if(pipeline.get(LSFU2)!=null){
+			Instructions ins = pipeline.get(LSFU2);
+			if(ins.opcode.equalsIgnoreCase("LOAD"))
+				unifiedRegisterFile.put(ins.destRegister, ins.result);
+			pipeline.put(writeLSFU, ins);
+			pipeline.put(LSFU2, null);
+		}
 	}
 	public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
 		for (Entry<T, E> entry : map.entrySet()) {
