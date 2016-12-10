@@ -640,11 +640,12 @@ public class ApexSimulatorExtended {
 					}
 					break;
 				} 
-				else if (iq.fuType == 1 && iq.ins.opcode.equals("MOVC")) {
-				source1ALU=iq.literal;
-				pipeline.put(execute1, iq.ins);
-				issueQueue.remove(i);
-				break;
+				else if (iq.fuType == 1 && iq.ins.opcode.equals("MOVC")) 
+				{
+					source1ALU=iq.literal;
+					pipeline.put(execute1, iq.ins);
+					issueQueue.remove(i);
+					break;
 				}
 				else 
 				{
@@ -725,8 +726,8 @@ public class ApexSimulatorExtended {
 						break;
 					case "STORE":
 						source1LSFU=iq.valuesrc1;
-						source2LSFU=iq.literal;
-						resultLSFU = source1LSFU + source2LSFU;
+						source2LSFU=iq.valuesrc2;
+						resultLSFU = source2LSFU + iq.literal;
 						pipeline.put(LSFU1, iq.ins);
 						issueQueue.remove(i);
 						break;
@@ -755,11 +756,13 @@ public class ApexSimulatorExtended {
 			{
 			case "LOAD":
 				memoryResult = memory[resultLSFU];
+				ins.result = memoryResult;
 				updateIQ(memoryResult, ins);
 				updateROB(memoryResult, ins);
 				break;
 			case "STORE":
 				memoryResult = memory[resultLSFU];
+				memory[memoryResult] = source1LSFU;
 				break;
 			}
 			
@@ -819,11 +822,11 @@ public class ApexSimulatorExtended {
 	public static void WriteBackALU(){
 		if(pipeline.get(execute2)!=null){
 			Instructions ins=pipeline.get(execute2);
-			pipeline.put(writeALU, ins);
 			unifiedRegisterFile.put(ins.physicalDestRegister, ins.result);
 			allocationList.add(ins.physicalDestRegister);
 			renameTable.get(ins.physicalDestRegister).valid=true;
-			
+			pipeline.put(writeALU, ins);
+			pipeline.put(execute2, null);
 		}	
 	}
 	
@@ -831,7 +834,11 @@ public class ApexSimulatorExtended {
 		if(pipeline.get(LSFU2)!=null){
 			Instructions ins = pipeline.get(LSFU2);
 			if(ins.opcode.equalsIgnoreCase("LOAD"))
+			{
 				unifiedRegisterFile.put(ins.destRegister, ins.result);
+				allocationList.add(ins.physicalDestRegister);
+				renameTable.get(ins.physicalDestRegister).valid=true;
+			}
 			pipeline.put(writeLSFU, ins);
 			pipeline.put(LSFU2, null);
 		}
