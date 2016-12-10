@@ -186,6 +186,7 @@ public class ApexSimulatorExtended {
 
 			if (pipeline.get(fetch) != null) {
 				pipeline.put(decode1, pipeline.get(fetch));
+				pipeline.put(fetch, null);
 
 			}
 		}
@@ -619,47 +620,29 @@ public class ApexSimulatorExtended {
 			index = issueQueue.size();
 			for (int i = 0; i < index; i++) {
 				iq = issueQueue.get(index - 1);
-				if (iq.fuType == 1 && iq.src1Valid == true
-						&& iq.src2Valid == true) {
+				if (iq.fuType == 1 && !iq.ins.opcode.equals("MOVC") && iq.src1Valid == true && iq.src2Valid == true) {
 					switch (iq.ins.opcode) {
 					case "ADD":
-						source1=iq.valuesrc1;
-						source2=iq.valuesrc2;
-						pipeline.put(execute1, iq.ins);
-						issueQueue.remove(i);
-						break;
 					case "SUB":
-						source1=iq.valuesrc1;
-						source2=iq.valuesrc2;
-						pipeline.put(execute1, iq.ins);
-						issueQueue.remove(i);
-						break;
 					case "AND":
-						source1=iq.valuesrc1;
-						source2=iq.valuesrc2;
-						pipeline.put(execute1, iq.ins);
-						issueQueue.remove(i);
-						break;
 					case "OR":
-						source1=iq.valuesrc1;
-						source2=iq.valuesrc2;
-						pipeline.put(execute1, iq.ins);
-						issueQueue.remove(i);
-						break;
 					case "EX-OR":
 						source1=iq.valuesrc1;
 						source2=iq.valuesrc2;
 						pipeline.put(execute1, iq.ins);
 						issueQueue.remove(i);
 						break;
-					case "MOVC":
-						source1=iq.literal;
-						pipeline.put(execute1, iq.ins);
-						issueQueue.remove(i);
-						break;
 					}
 					break;
-				} else {
+				} 
+				else if (iq.fuType == 1 && iq.ins.opcode.equals("MOVC")) {
+				source1=iq.literal;
+				pipeline.put(execute1, iq.ins);
+				issueQueue.remove(i);
+				break;
+				}
+				else 
+				{
 					index--;
 				}
 				
