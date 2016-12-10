@@ -26,7 +26,11 @@ public final class CircularQueue extends AbstractCollection<ROB> {
 
   private ROB[] q;
 
-  public CircularQueue() {
+  public ROB[] getQ() {
+	return q;
+}
+
+public CircularQueue() {
     this(DEFAULT_CAPACITY);
   }
 

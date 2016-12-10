@@ -34,8 +34,7 @@ public class ApexSimulatorExtended {
 	final static String decode1 = "decode1";
 	final static String decode2 = "decode2";
 	final static String execute1 = "execute1", execute2 = "execute2";
-	final static String multiply = "multiply", LSFU1 = "LSFU1",
-	LSFU2 = "LASFU2";
+	final static String multiply = "multiply", LSFU1 = "LSFU1", LSFU2 = "LSFU2";
 	final static String branchALU1 = "branchALU1";
 	final static String writeALU = "writeALU", writeMultiply = "writeMultiply",
 	writeLSFU = "writeLSFU", writeBranch = "writeBranch";
@@ -44,7 +43,6 @@ public class ApexSimulatorExtended {
 	public static int programCounter = 4000;
 	public static HashMap Instruction;
 	public static HashMap<Integer, String> InstructionMap = new HashMap<Integer, String>();
-	public static LinkedHashMap<String, Integer> registerFile = new LinkedHashMap<String, Integer>();
 	public static LinkedHashMap<String, Integer> unifiedRegisterFile = new LinkedHashMap<String, Integer>();
 	public static LinkedHashMap<String, RenameTable> renameTable = new LinkedHashMap<String, RenameTable>();
 	public static int memory[] = new int[4000];
@@ -136,8 +134,7 @@ public class ApexSimulatorExtended {
 
 	public static void Simulate() {
 
-		System.out
-				.println("Please enter the total number of cycles you want to simulate:");
+		System.out.println("Please enter the total number of cycles you want to simulate:");
 		Scanner sc = new Scanner(System.in);
 		int cycles = sc.nextInt();
 		for (int i = 1; i <= cycles; i++) {
@@ -147,19 +144,20 @@ public class ApexSimulatorExtended {
 			// WriteBackALU();
 			// WriteBackLSFU();
 			// WriteBackMUL();
-			// Commit();
+			 Commit();
 			// ExecuteMul();
-			// ExecuteLSFU1();
 			// ExecuteLSFU2();
-			ExecuteAlu1();
-			// ExecuteAlu2();
+			// ExecuteLSFU1();
+			 ExecuteAlu2();
+			 ExecuteAlu1();
 			// Branch();
-			Decode2();
-			Decode1();
-			FetchStage();
+			 Decode2();
+			 Decode1();
+			 FetchStage();
 
 		}
 	}
+
 
 	public static void FetchStage() {
 		if (BranchTaken == true) {
@@ -177,7 +175,7 @@ public class ApexSimulatorExtended {
 				if (instruction.opcode.equals("BAL")) {
 					NextInstructionBAL = programCounter + 4;
 				}
-				pipeline.put("Fetch", instruction);
+				pipeline.put(fetch, instruction);
 				programCounter = programCounter + 4;
 			}
 		}
@@ -195,17 +193,15 @@ public class ApexSimulatorExtended {
 
 	public static void Decode2() {
 
-		if (pipeline.get(decode1) != null) {
+ 		if (pipeline.get(decode1) != null) {
 
 			RenameTable rt = new RenameTable();
 			if (BranchTaken == false && HALTFLAG == false) {
 
 				if (isStall == false) {
-					Instructions ins = pipeline.get("Decode1");
+					Instructions ins = pipeline.get(decode1);
 					IQ issue = new IQ();
 					ROB rob = new ROB();
-
-					pipeline.put(decode2, ins);
 
 					switch (ins.opcode) {
 					case "ADD":
@@ -219,14 +215,14 @@ public class ApexSimulatorExtended {
 								issue.src1Valid = false;
 							else {
 								issue.src1Valid = true;
-								issue.valuesrc1 = registerFile
+								issue.valuesrc1 = unifiedRegisterFile
 										.get(renameTable.get(ins.src1Register).physicalRegister);
 							}
 							if (renameTable.get(ins.src2Register).valid == false)
 								issue.src2Valid = false;
 							else {
 								issue.src2Valid = true;
-								issue.valuesrc2 = registerFile
+								issue.valuesrc2 = unifiedRegisterFile
 										.get(renameTable.get(ins.src2Register).physicalRegister);
 							}
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
@@ -260,14 +256,14 @@ public class ApexSimulatorExtended {
 								issue.src1Valid = false;
 							else {
 								issue.src1Valid = true;
-								issue.valuesrc1 = registerFile
+								issue.valuesrc1 = unifiedRegisterFile
 										.get(renameTable.get(ins.src1Register).physicalRegister);
 							}
 							if (renameTable.get(ins.src2Register).valid == false)
 								issue.src2Valid = false;
 							else {
 								issue.src2Valid = true;
-								issue.valuesrc2 = registerFile
+								issue.valuesrc2 = unifiedRegisterFile
 										.get(renameTable.get(ins.src2Register).physicalRegister);
 							}
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
@@ -301,14 +297,14 @@ public class ApexSimulatorExtended {
 								issue.src1Valid = false;
 							else {
 								issue.src1Valid = true;
-								issue.valuesrc1 = registerFile
+								issue.valuesrc1 = unifiedRegisterFile
 										.get(renameTable.get(ins.src1Register).physicalRegister);
 							}
 							if (renameTable.get(ins.src2Register).valid == false)
 								issue.src2Valid = false;
 							else {
 								issue.src2Valid = true;
-								issue.valuesrc2 = registerFile
+								issue.valuesrc2 = unifiedRegisterFile
 										.get(renameTable.get(ins.src2Register).physicalRegister);
 							}
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
@@ -342,14 +338,14 @@ public class ApexSimulatorExtended {
 								issue.src1Valid = false;
 							else {
 								issue.src1Valid = true;
-								issue.valuesrc1 = registerFile
+								issue.valuesrc1 = unifiedRegisterFile
 										.get(renameTable.get(ins.src1Register).physicalRegister);
 							}
 							if (renameTable.get(ins.src2Register).valid == false)
 								issue.src2Valid = false;
 							else {
 								issue.src2Valid = true;
-								issue.valuesrc2 = registerFile
+								issue.valuesrc2 = unifiedRegisterFile
 										.get(renameTable.get(ins.src2Register).physicalRegister);
 							}
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
@@ -383,14 +379,14 @@ public class ApexSimulatorExtended {
 								issue.src1Valid = false;
 							else {
 								issue.src1Valid = true;
-								issue.valuesrc1 = registerFile
+								issue.valuesrc1 = unifiedRegisterFile
 										.get(renameTable.get(ins.src1Register).physicalRegister);
 							}
 							if (renameTable.get(ins.src2Register).valid == false)
 								issue.src2Valid = false;
 							else {
 								issue.src2Valid = true;
-								issue.valuesrc2 = registerFile
+								issue.valuesrc2 = unifiedRegisterFile
 										.get(renameTable.get(ins.src2Register).physicalRegister);
 							}
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
@@ -424,14 +420,14 @@ public class ApexSimulatorExtended {
 								issue.src1Valid = false;
 							else {
 								issue.src1Valid = true;
-								issue.valuesrc1 = registerFile
+								issue.valuesrc1 = unifiedRegisterFile
 										.get(renameTable.get(ins.src1Register).physicalRegister);
 							}
 							if (renameTable.get(ins.src2Register).valid == false)
 								issue.src2Valid = false;
 							else {
 								issue.src2Valid = true;
-								issue.valuesrc2 = registerFile
+								issue.valuesrc2 = unifiedRegisterFile
 										.get(renameTable.get(ins.src2Register).physicalRegister);
 							}
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
@@ -470,8 +466,7 @@ public class ApexSimulatorExtended {
 						// ROB processing
 						rob.destinationRegsiter = ins.destRegister;
 						rob.isValid = false;
-						rob.pc = getKeyByValue(InstructionMap,
-								ins.instructionString);
+						rob.pc = getKeyByValue(InstructionMap, ins.instructionString);
 						rob.isValid = false;
 						rob.physicalRegister = rt.physicalRegister;
 						ROB.add(rob);
@@ -488,7 +483,7 @@ public class ApexSimulatorExtended {
 								issue.src1Valid = false;
 							else {
 								issue.src1Valid = true;
-								issue.valuesrc1 = registerFile
+								issue.valuesrc1 = unifiedRegisterFile
 										.get(renameTable.get(ins.src1Register).physicalRegister);
 							}
 
@@ -519,14 +514,14 @@ public class ApexSimulatorExtended {
 								issue.src1Valid = false;
 							else {
 								issue.src1Valid = true;
-								issue.valuesrc1 = registerFile
+								issue.valuesrc1 = unifiedRegisterFile
 										.get(renameTable.get(ins.src1Register).physicalRegister);
 							}
 							if (renameTable.get(ins.src2Register).valid == false)
 								issue.src2Valid = false;
 							else {
 								issue.src2Valid = true;
-								issue.valuesrc2 = registerFile
+								issue.valuesrc2 = unifiedRegisterFile
 										.get(renameTable.get(ins.src2Register).physicalRegister);
 							}
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
@@ -581,7 +576,7 @@ public class ApexSimulatorExtended {
 								issue.src1Valid = false;
 							else {
 								issue.src1Valid = true;
-								issue.valuesrc1 = registerFile
+								issue.valuesrc1 = unifiedRegisterFile
 										.get(renameTable.get(ins.src1Register).physicalRegister);
 							}
 							// issue queue processing
@@ -605,6 +600,9 @@ public class ApexSimulatorExtended {
 						break;
 
 					}
+					
+					pipeline.put(decode2, ins);
+					pipeline.put(decode1, null);
 
 				}
 
@@ -671,7 +669,7 @@ public class ApexSimulatorExtended {
 	public static void ExecuteAlu2() {
 		if(!issueQueue.isEmpty()){
 			Instructions ins=pipeline.get(execute1);
-			pipeline.put(execute2, ins);
+			
 			String opcode=ins.opcode;
 			int result;
 			switch(opcode){
@@ -700,9 +698,25 @@ public class ApexSimulatorExtended {
 				updateIQ(result, ins);
 				break;
 			}
+			
+			pipeline.put(execute2, ins);
+			pipeline.put(execute1, null);
 					
 					
 		}
+	}
+	
+	public static void Commit() {
+		
+		ROB rob_array[] = null;
+		rob_array = ROB.getQ();
+		ROB rob = new ROB();
+		rob = rob_array[ROB.getHeadIndex()];
+		if(rob != null && rob.isValid)
+		{
+			unifiedRegisterFile.put(rob.destinationRegsiter, rob.value);
+		}
+		
 	}
 	
 	static void updateIQ(int result, Instructions ins){
@@ -723,7 +737,9 @@ public class ApexSimulatorExtended {
 	}
 	public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
 		for (Entry<T, E> entry : map.entrySet()) {
-			if (Objects.equals(value, entry.getValue())) {
+			String temp = (String) entry.getValue();
+			temp = temp.replaceAll(",", " ");
+			if (Objects.equals(value, temp)) {
 				return entry.getKey();
 			}
 		}
@@ -741,22 +757,22 @@ public class ApexSimulatorExtended {
 		ReadInstructionfile(path);
 		if (sizeUrf >= 32) {
 			for (int i = 0; i < 16; i++) {
-				registerFile.put("R" + i, 0);
+				unifiedRegisterFile.put("R" + i, 0);
 			}
 
 			for (int i = 16; i < sizeUrf; i++) {
-				registerFile.put("P" + i, 0);
+				unifiedRegisterFile.put("P" + i, 0);
 				allocationList.add("P" + i);
 			}
 
-			registerFile.put("X", 0);
+			unifiedRegisterFile.put("X", 0);
 
 			for (int k = 0; k < 4000; k++) {
 				memory[k] = 0;
 			}
 
 			for (int i = 16; i < sizeUrf; i++) {
-				registerFile.put("P" + i, 0);
+				unifiedRegisterFile.put("P" + i, 0);
 
 			}
 
