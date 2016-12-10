@@ -668,7 +668,7 @@ public class ApexSimulatorExtended {
 	}
 
 	public static void ExecuteAlu2() {
-		if(!issueQueue.isEmpty()){
+		if(pipeline.get(execute1)!=null){
 			Instructions ins=pipeline.get(execute1);
 			
 			String opcode=ins.opcode;
@@ -678,31 +678,37 @@ public class ApexSimulatorExtended {
 				result=source1ALU+source2ALU;
 				ins.result=result;
 				updateIQ(result,ins);
+				updateROB(result, ins);
 				break;
 			case "SUB":
 				result=source1ALU-source2ALU;
 				ins.result=result;
 				updateIQ(result,ins);
+				updateROB(result, ins);
 				break;
 			case "AND":
 				result=source1ALU&source2ALU;
 				ins.result=result;
 				updateIQ(result,ins);
+				updateROB(result, ins);
 				break;
 			case "OR":
 				result=source1ALU|source2ALU;
 				ins.result=result;
 				updateIQ(result,ins);
+				updateROB(result, ins);
 				break;
 			case "EX-OR":
 				result=source1ALU^source2ALU;
 				ins.result=result;
 				updateIQ(result,ins);
+				updateROB(result, ins);
 				break;
 			case "MOVC":
 				result=literal_zero+source1ALU;
 				ins.result=result;
 				updateIQ(result, ins);
+				updateROB(result, ins);
 				break;
 			}
 			
@@ -749,6 +755,14 @@ public class ApexSimulatorExtended {
 	static void updateROB(int result, Instructions ins){
 		ROB rob_array[] = null;
 		rob_array = ROB.getQ();
+		int headIndex = ROB.getHeadIndex();
+		for(int i=headIndex;i>=0;i--){
+			if(rob_array[i].physicalRegister.equalsIgnoreCase(ins.physicalDestRegister)){
+				rob_array[i].value=ins.result;
+				rob_array[i].isValid=true;
+				break;
+			}
+		}
 	}
 	static void WriteBackALU(){
 		if(pipeline.get(execute2)!=null){
