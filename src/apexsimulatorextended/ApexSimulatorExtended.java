@@ -273,7 +273,6 @@ public class ApexSimulatorExtended {
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
-							issue.ins.physicalDestRegister = rt.physicalRegister;
 							issue.ins = ins;
 							issueQueue.add(issue);
 
@@ -315,7 +314,6 @@ public class ApexSimulatorExtended {
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
-							issue.ins.physicalDestRegister = rt.physicalRegister;
 							issue.ins = ins;
 							issueQueue.add(issue);
 
@@ -357,7 +355,6 @@ public class ApexSimulatorExtended {
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
-							issue.ins.physicalDestRegister = rt.physicalRegister;
 							issue.ins = ins;
 							issueQueue.add(issue);
 
@@ -399,7 +396,6 @@ public class ApexSimulatorExtended {
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
-							issue.ins.physicalDestRegister = rt.physicalRegister;
 							issue.ins = ins;
 							issueQueue.add(issue);
 
@@ -441,7 +437,6 @@ public class ApexSimulatorExtended {
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
-							issue.ins.physicalDestRegister = rt.physicalRegister;
 							issue.ins = ins;
 							issueQueue.add(issue);
 
@@ -466,7 +461,6 @@ public class ApexSimulatorExtended {
 						// issue queue processing
 						issue.fuType = 1;
 						issue.destination = rt.physicalRegister;
-						issue.ins.physicalDestRegister = rt.physicalRegister;
 						issue.ins = ins;
 						issue.literal=ins.literal;
 						issueQueue.add(issue);
@@ -500,7 +494,6 @@ public class ApexSimulatorExtended {
 							// issue queue processing
 							issue.fuType = 3;
 							issue.destination = rt.physicalRegister;
-							issue.ins.physicalDestRegister = rt.physicalRegister;
 							issue.ins = ins;
 							issue.literal=ins.literal;
 							issueQueue.add(issue);
