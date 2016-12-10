@@ -359,7 +359,7 @@ public class ApexSimulatorExtended {
 							issue.ins = ins;
 							issueQueue.add(issue);
 
-							// ROB processing
+							// ROB processing OK
 							rob.destinationRegsiter = ins.destRegister;
 							rob.isValid = false;
 							rob.pc = getKeyByValue(InstructionMap,
