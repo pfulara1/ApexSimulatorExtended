@@ -142,7 +142,7 @@ public class ApexSimulatorExtended {
 			if (HALTFLAG == true) {
 				break;
 			}
-			// WriteBackALU();
+			 WriteBackALU();
 			 WriteBackLSFU();
 			// WriteBackMUL();
 			 Commit();
@@ -786,6 +786,20 @@ public class ApexSimulatorExtended {
 		
 	}
 	
+	static void updateROB(int result, Instructions ins){
+		ROB rob_array[] = null;
+		rob_array = ROB.getQ();
+		int headIndex = rob_array.length;
+		for(int i=0;i<headIndex;i++){
+			if(rob_array[i].pc==ins.pc_value){
+				rob_array[i].value=ins.result;
+				rob_array[i].isValid=true;
+				break;
+			}
+		}
+		ROB.setQ(rob_array);
+	}
+	
 	static void updateIQ(int result, Instructions ins){
 		for(int i=0;i<issueQueue.size();i++){
 			Instructions IQins=issueQueue.get(i).ins;
@@ -806,18 +820,6 @@ public class ApexSimulatorExtended {
 		}
 	}
 	
-	public static void updateROB(int result, Instructions ins){
-		ROB rob_array[] = null;
-		rob_array = ROB.getQ();
-		int headIndex = ROB.getHeadIndex();
-		for(int i=headIndex;i>=0;i--){
-			if(rob_array[i].physicalRegister.equalsIgnoreCase(ins.physicalDestRegister)){
-				rob_array[i].value=ins.result;
-				rob_array[i].isValid=true;
-				break;
-			}
-		}
-	}
 	
 	public static void WriteBackALU(){
 		if(pipeline.get(execute2)!=null){
