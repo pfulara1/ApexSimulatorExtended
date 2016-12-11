@@ -168,10 +168,10 @@ public class ApexSimulatorExtended {
 			if (HALTFLAG == true) {
 				break;
 			}
+			Commit();
 			WriteBackALU();
 			WriteBackLSFU();
 			WriteBackMUL();
-			Commit();
 			ExecuteMul();
 			ExecuteLSFU2();
 			ExecuteLSFU1();
@@ -853,7 +853,7 @@ public class ApexSimulatorExtended {
 		if (!issueQueue.isEmpty()) {
 			IQ iq;
 			index = issueQueue.size();
-			for (int i = 0; i < index; i++) {
+			for (int i = 0; i <= index; i++) {
 				iq = issueQueue.get(index - 1);
 				if (iq!=null && iq.fuType == 1 && !iq.ins.opcode.equals("MOVC")
 						&& iq.src1Valid == true && iq.src2Valid == true) {
@@ -876,6 +876,8 @@ public class ApexSimulatorExtended {
 					issueQueue.remove(index - 1);
 					break;
 				}
+				else
+					index--;
 
 			}
 		}
@@ -948,7 +950,7 @@ public class ApexSimulatorExtended {
 		if (!issueQueue.isEmpty()) {
 			IQ iq;
 			index = issueQueue.size();
-			for (int i = 0; i < index; i++) {
+			for (int i = 0; i <= index; i++) {
 				iq = issueQueue.get(index - 1);
 				if (iq!=null && iq.fuType == 3 && iq.src1Valid == true
 						&& iq.src2Valid == true) {
@@ -970,6 +972,8 @@ public class ApexSimulatorExtended {
 					}
 					break;
 				}
+				else
+					index--;
 
 			}
 		}
@@ -1006,11 +1010,11 @@ public class ApexSimulatorExtended {
 		if (!issueQueue.isEmpty()) {
 			IQ iq;
 			index = issueQueue.size();
-			for (int i = 0; i < index; i++) {
+			for (int i = 0; i <= index; i++) {
 				iq = issueQueue.get(index - 1);
 				if (iq!=null && iq.fuType == 2 && iq.src1Valid == true
 						&& iq.src2Valid == true) {
-					issueQueue.remove(i);
+					issueQueue.remove(index - 1);
 					counter--;
 					if (counter == 0) {
 						source1MUL = iq.valuesrc1;
@@ -1029,6 +1033,8 @@ public class ApexSimulatorExtended {
 					}
 					pipeline.put(multiply, iq.ins);
 				}
+				else
+					index--;
 			}
 		}
 	}
@@ -1039,7 +1045,7 @@ public class ApexSimulatorExtended {
 			if (BranchTaken == false) {
 				IQ iq;
 				index = issueQueue.size();
-				for (int i = 0; i < index; i++) {
+				for (int i = 0; i <= index; i++) {
 					iq = issueQueue.get(index - 1);
 					if (iq!=null && iq.fuType == 4 && iq.src1Valid == true && iq.src2Valid == true) {
 						issueQueue.remove(index - 1);
@@ -1091,6 +1097,8 @@ public class ApexSimulatorExtended {
 						pipeline.put(branchALU1, iq.ins);
 						break;
 					}
+					else
+						index--;
 
 				}
 			}
