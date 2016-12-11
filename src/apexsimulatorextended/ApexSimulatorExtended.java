@@ -910,8 +910,6 @@ public class ApexSimulatorExtended {
 					pipeline.put(execute1, iq.ins);
 					issueQueue.remove(index - 1);
 					break;
-				} else {
-					index--;
 				}
 
 			}
@@ -1006,8 +1004,6 @@ public class ApexSimulatorExtended {
 						break;
 					}
 					break;
-				} else {
-					index--;
 				}
 
 			}
@@ -1019,7 +1015,7 @@ public class ApexSimulatorExtended {
 
 		if (loadStoreRobHead && pipeline.get(LSFU1) != null) {
 			Instructions ins = pipeline.get(LSFU1);
-
+			loadStoreRobHead = false;
 			String opcode = ins.opcode;
 			int memoryResult;
 			switch (opcode) {
