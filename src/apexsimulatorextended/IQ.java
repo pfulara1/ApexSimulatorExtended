@@ -15,7 +15,7 @@ public class IQ {
    
    @Override
    public String toString() {
-   	return "InstrType:"+ins.opcode+"\tsrc1value:"+valuesrc1+"\tsrc1valid"+src1Valid+
+   	return "InstrType:"+ins.opcode+"\tsrc1value:"+valuesrc1+"\tsrc1valid:"+src1Valid+
    			"\tsrc2value:"+valuesrc2+"\tsrc2valid:"+src2Valid+"\tDest:"+destination+"\tFUtype:"+fuType;
    }
 }

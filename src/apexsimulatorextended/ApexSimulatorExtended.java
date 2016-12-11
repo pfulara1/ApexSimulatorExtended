@@ -25,6 +25,7 @@ public class ApexSimulatorExtended {
 	final static String fetch = "fetch";
 	final static String decode1 = "decode1";
 	final static String decode2 = "decode2";
+	final static String issueQ = "issuequeue";
 	final static String execute1 = "execute1", execute2 = "execute2";
 	final static String multiply = "multiply", LSFU1 = "LSFU1", LSFU2 = "LSFU2";
 	final static String branchALU1 = "branchALU1";
@@ -58,6 +59,7 @@ public class ApexSimulatorExtended {
 	public static int source1ALU, source2ALU,source1MUL,source2MUL,source1Branch,source2Branch,source1LSFU,source2LSFU;
 	public static int counter=0;
 	public static boolean branchStall=false;
+	public static IQ putInQ= new IQ(); 
 	/*
 	 * This function take the file path as a argument read the file line by line
 	 * and put the instructions in an Hash Map
@@ -145,11 +147,22 @@ public class ApexSimulatorExtended {
 			ExecuteAlu2();
 			ExecuteAlu1();
 			Branch();
+			Issue();
 			Decode2();
 			Decode1();
 			FetchStage();
 
 		}
+	}
+
+	private static void Issue() {
+		if(pipeline.get(decode2)!=null){
+			issueQueue.add(putInQ);
+			pipeline.put(issueQ, pipeline.get(decode2));
+			pipeline.put(decode2, null);
+			putInQ=null;
+		}
+		
 	}
 
 	private static void Display() {
@@ -260,7 +273,7 @@ public class ApexSimulatorExtended {
 							ins.physicalDestRegister = rt.physicalRegister;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
-							issueQueue.add(issue);
+							putInQ=issue;
 
 							// ROB processing
 							rob.destinationRegsiter = ins.destRegister;
@@ -303,8 +316,8 @@ public class ApexSimulatorExtended {
 							ins.physicalDestRegister = rt.physicalRegister;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
-							issueQueue.add(issue);
-
+							putInQ=issue;
+							
 							// ROB processing
 							rob.destinationRegsiter = ins.destRegister;
 							rob.isValid = false;
@@ -346,8 +359,8 @@ public class ApexSimulatorExtended {
 							ins.physicalDestRegister = rt.physicalRegister;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
-							issueQueue.add(issue);
-
+							putInQ=issue;
+							
 							// ROB processing
 							rob.destinationRegsiter = ins.destRegister;
 							rob.isValid = false;
@@ -389,9 +402,9 @@ public class ApexSimulatorExtended {
 							ins.physicalDestRegister = rt.physicalRegister;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
-							issueQueue.add(issue);
-
-							// ROB processing OK
+							putInQ=issue;
+							
+							// ROB processing
 							rob.destinationRegsiter = ins.destRegister;
 							rob.isValid = false;
 							rob.pc = getKeyByValue(InstructionMap,
@@ -432,8 +445,8 @@ public class ApexSimulatorExtended {
 							ins.physicalDestRegister = rt.physicalRegister;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
-							issueQueue.add(issue);
-
+							putInQ=issue;
+							
 							// ROB processing
 							rob.destinationRegsiter = ins.destRegister;
 							rob.isValid = false;
@@ -475,8 +488,8 @@ public class ApexSimulatorExtended {
 							ins.physicalDestRegister = rt.physicalRegister;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
-							issueQueue.add(issue);
-
+							putInQ=issue;
+							
 							// ROB processing
 							rob.destinationRegsiter = ins.destRegister;
 							rob.isValid = false;
@@ -504,8 +517,8 @@ public class ApexSimulatorExtended {
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issue.literal=ins.literal;
-							issueQueue.add(issue);
-
+							putInQ=issue;
+							
 							// ROB processing
 							rob.destinationRegsiter = ins.destRegister;
 							rob.isValid = false;
@@ -541,8 +554,8 @@ public class ApexSimulatorExtended {
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issue.literal=ins.literal;
-							issueQueue.add(issue);
-
+							putInQ=issue;
+							
 							// ROB processing
 							rob.destinationRegsiter = ins.destRegister;
 							rob.isValid = false;
@@ -580,7 +593,8 @@ public class ApexSimulatorExtended {
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issue.literal=ins.literal;
-							issueQueue.add(issue);
+							putInQ=issue;
+							
 						} else {
 							isStall = true;
 						}
@@ -594,8 +608,8 @@ public class ApexSimulatorExtended {
 							issue.fuType = 4;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
-							issueQueue.add(issue);
-                                                        branchStall=true;
+							putInQ=issue;   
+							branchStall=true;
 						} else {
 							isStall = true;
 						}
@@ -609,8 +623,8 @@ public class ApexSimulatorExtended {
 							issue.src2Valid=true;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
-							issueQueue.add(issue);
-                                                        branchStall=true;
+							putInQ=issue;   
+							branchStall=true;
 						} else {
 							isStall = true;
 						}
@@ -624,7 +638,7 @@ public class ApexSimulatorExtended {
 							issue.fuType = 4;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
-							issueQueue.add(issue);
+							putInQ=issue;
 						} else {
 							isStall = true;
 						}
@@ -643,7 +657,7 @@ public class ApexSimulatorExtended {
 							issue.src2Valid=true;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
-							issueQueue.add(issue);
+							putInQ=issue;
 						} else {
 							isStall = true;
 						}
@@ -657,7 +671,7 @@ public class ApexSimulatorExtended {
 							issue.fuType = 4;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
-							issueQueue.add(issue);
+							putInQ=issue;
 						} else {
 							isStall = true;
 						}
@@ -1108,6 +1122,7 @@ public class ApexSimulatorExtended {
 		pipeline.put(fetch, null);
 		pipeline.put(decode1, null);
 		pipeline.put(decode2, null);
+		pipeline.put(issueQ, null);
 		pipeline.put(execute1, null);
 		pipeline.put(execute2, null);
 		pipeline.put(multiply, null);
