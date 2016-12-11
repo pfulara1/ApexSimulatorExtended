@@ -45,7 +45,7 @@ public class ApexSimulatorExtended {
 	public static int sizeUrf = 32;
 	public static List<IQ> issueQueue = new ArrayList<IQ>(12);
 	public static CircularQueue ROB = new CircularQueue(16);
-	public static HashMap<String, Instructions> pipeline = new HashMap<String, Instructions>();
+	public static HashMap<String, Instructions> pipeline = new LinkedHashMap<String, Instructions>();
 	public static boolean BranchTaken = false;
 	public static boolean isStall = false;
 	public static int BranchPcValue;
@@ -287,7 +287,7 @@ public class ApexSimulatorExtended {
 
 			String ins = InstructionMap.get(programCounter);
 			Instructions instruction = new Instructions();
-			instruction = instruction.ProcessInstruction(ins);
+			instruction = instruction.ProcessInstruction(ins, programCounter);
 			if (instruction != null) {
 				if (instruction.opcode.equals("BNZ")
 						|| instruction.opcode.equals("BZ")) {
@@ -370,16 +370,13 @@ public class ApexSimulatorExtended {
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
 							ins.physicalDestRegister = rt.physicalRegister;
-							ins.pc_value = getKeyByValue(InstructionMap,
-									ins.instructionString);
 							issue.ins = ins;
 							putInQ = issue;
 
 							// ROB processing
 							rob.destinationRegsiter = ins.destRegister;
 							rob.isValid = false;
-							rob.pc = getKeyByValue(InstructionMap,
-									ins.instructionString);
+							rob.pc = ins.pc_value;
 							rob.isValid = false;
 							rob.physicalRegister = rt.physicalRegister;
 							ROB.add(rob);
@@ -427,16 +424,13 @@ public class ApexSimulatorExtended {
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
 							ins.physicalDestRegister = rt.physicalRegister;
-							ins.pc_value = getKeyByValue(InstructionMap,
-									ins.instructionString);
 							issue.ins = ins;
 							putInQ = issue;
 
 							// ROB processing
 							rob.destinationRegsiter = ins.destRegister;
 							rob.isValid = false;
-							rob.pc = getKeyByValue(InstructionMap,
-									ins.instructionString);
+							rob.pc = ins.pc_value;
 							rob.isValid = false;
 							rob.physicalRegister = rt.physicalRegister;
 							ROB.add(rob);
@@ -484,16 +478,13 @@ public class ApexSimulatorExtended {
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
 							ins.physicalDestRegister = rt.physicalRegister;
-							ins.pc_value = getKeyByValue(InstructionMap,
-									ins.instructionString);
 							issue.ins = ins;
 							putInQ = issue;
 
 							// ROB processing
 							rob.destinationRegsiter = ins.destRegister;
 							rob.isValid = false;
-							rob.pc = getKeyByValue(InstructionMap,
-									ins.instructionString);
+							rob.pc = ins.pc_value;
 							rob.isValid = false;
 							rob.physicalRegister = rt.physicalRegister;
 							ROB.add(rob);
@@ -541,16 +532,13 @@ public class ApexSimulatorExtended {
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
 							ins.physicalDestRegister = rt.physicalRegister;
-							ins.pc_value = getKeyByValue(InstructionMap,
-									ins.instructionString);
 							issue.ins = ins;
 							putInQ = issue;
 
 							// ROB processing
 							rob.destinationRegsiter = ins.destRegister;
 							rob.isValid = false;
-							rob.pc = getKeyByValue(InstructionMap,
-									ins.instructionString);
+							rob.pc = ins.pc_value;
 							rob.isValid = false;
 							rob.physicalRegister = rt.physicalRegister;
 							ROB.add(rob);
@@ -597,16 +585,13 @@ public class ApexSimulatorExtended {
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
 							ins.physicalDestRegister = rt.physicalRegister;
-							ins.pc_value = getKeyByValue(InstructionMap,
-									ins.instructionString);
 							issue.ins = ins;
 							putInQ = issue;
 
 							// ROB processing
 							rob.destinationRegsiter = ins.destRegister;
 							rob.isValid = false;
-							rob.pc = getKeyByValue(InstructionMap,
-									ins.instructionString);
+							rob.pc = ins.pc_value;
 							rob.isValid = false;
 							rob.physicalRegister = rt.physicalRegister;
 							ROB.add(rob);
@@ -644,16 +629,13 @@ public class ApexSimulatorExtended {
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
 							ins.physicalDestRegister = rt.physicalRegister;
-							ins.pc_value = getKeyByValue(InstructionMap,
-									ins.instructionString);
 							issue.ins = ins;
 							putInQ = issue;
 
 							// ROB processing
 							rob.destinationRegsiter = ins.destRegister;
 							rob.isValid = false;
-							rob.pc = getKeyByValue(InstructionMap,
-									ins.instructionString);
+							rob.pc = ins.pc_value;
 							rob.isValid = false;
 							rob.physicalRegister = rt.physicalRegister;
 							ROB.add(rob);
@@ -674,8 +656,6 @@ public class ApexSimulatorExtended {
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
 							ins.physicalDestRegister = rt.physicalRegister;
-							ins.pc_value = getKeyByValue(InstructionMap,
-									ins.instructionString);
 							issue.ins = ins;
 							issue.literal = ins.literal;
 							putInQ = issue;
@@ -683,8 +663,7 @@ public class ApexSimulatorExtended {
 							// ROB processing
 							rob.destinationRegsiter = ins.destRegister;
 							rob.isValid = false;
-							rob.pc = getKeyByValue(InstructionMap,
-									ins.instructionString);
+							rob.pc = ins.pc_value;
 							rob.isValid = false;
 							rob.physicalRegister = rt.physicalRegister;
 							ROB.add(rob);
@@ -716,8 +695,6 @@ public class ApexSimulatorExtended {
 							issue.fuType = 3;
 							issue.destination = rt.physicalRegister;
 							ins.physicalDestRegister = rt.physicalRegister;
-							ins.pc_value = getKeyByValue(InstructionMap,
-									ins.instructionString);
 							issue.ins = ins;
 							issue.src2Valid = true;
 							issue.literal = ins.literal;
@@ -726,8 +703,7 @@ public class ApexSimulatorExtended {
 							// ROB processing
 							rob.destinationRegsiter = ins.destRegister;
 							rob.isValid = false;
-							rob.pc = getKeyByValue(InstructionMap,
-									ins.instructionString);
+							rob.pc = ins.pc_value;
 							rob.isValid = false;
 							rob.physicalRegister = rt.physicalRegister;
 							ROB.add(rob);
@@ -757,8 +733,6 @@ public class ApexSimulatorExtended {
 							// issue queue processing
 							issue.fuType = 3;
 							issue.destination = rt.physicalRegister;
-							ins.pc_value = getKeyByValue(InstructionMap,
-									ins.instructionString);
 							issue.ins = ins;
 							issue.literal = ins.literal;
 							rob.memoryAddressForStore = 0;
@@ -778,8 +752,6 @@ public class ApexSimulatorExtended {
 							issue.src1Valid = true;
 							issue.src2Valid = true;
 							issue.fuType = 4;
-							ins.pc_value = getKeyByValue(InstructionMap,
-									ins.instructionString);
 							issue.ins = ins;
 							rob.isValid=true;
 							rob.pc = ins.pc_value;
@@ -797,8 +769,6 @@ public class ApexSimulatorExtended {
 							issue.fuType = 4;
 							issue.src1Valid = true;
 							issue.src2Valid = true;
-							ins.pc_value = getKeyByValue(InstructionMap,
-									ins.instructionString);
 							issue.ins = ins;
 							rob.isValid=true;
 							rob.pc = ins.pc_value;
@@ -816,8 +786,6 @@ public class ApexSimulatorExtended {
 							issue.src1Valid = true;
 							issue.src2Valid = true;
 							issue.fuType = 4;
-							ins.pc_value = getKeyByValue(InstructionMap,
-									ins.instructionString);
 							issue.ins = ins;
 							rob.pc = ins.pc_value;
 							rob.isValid=true;
@@ -839,8 +807,6 @@ public class ApexSimulatorExtended {
 							// issue queue processing
 							issue.fuType = 4;
 							issue.src2Valid = true;
-							ins.pc_value = getKeyByValue(InstructionMap,
-									ins.instructionString);
 							issue.ins = ins;
 							rob.isValid=true;
 							rob.pc = ins.pc_value;
@@ -857,8 +823,6 @@ public class ApexSimulatorExtended {
 							issue.src1Valid = true;
 							issue.src2Valid = true;
 							issue.fuType = 4;
-							ins.pc_value = getKeyByValue(InstructionMap,
-									ins.instructionString);
 							issue.ins = ins;
 							rob.pc = ins.pc_value;
 							rob.isValid=true;
@@ -1141,7 +1105,7 @@ public class ApexSimulatorExtended {
 		{
 			String ins = InstructionMap.get(rob.pc);
 			Instructions instruction = new Instructions();
-			instruction = instruction.ProcessInstruction(ins);
+			instruction = instruction.ProcessInstruction(ins, rob.pc);
 
 			if(instruction.opcode.equalsIgnoreCase("STORE"))
 			{
@@ -1189,9 +1153,9 @@ public class ApexSimulatorExtended {
 			boolean isBranchTaken) {
 		ROB rob_array[] = null;
 		rob_array = ROB.getQ();
-		int headIndex = ROB.getHeadIndex();
-		for (int i = headIndex; i < rob_array.length; i++) {
-			if (rob_array[i].pc == ins.pc_value) {
+		//int headIndex = ROB.getHeadIndex();
+		for (int i = 0; i < rob_array.length; i++) {
+			if (rob_array[i] !=null && rob_array[i].pc == ins.pc_value) {
 				rob_array[i].value = ins.result;
 				rob_array[i].isValid = true;
 				rob_array[i].isBranchTaken = isBranchTaken;

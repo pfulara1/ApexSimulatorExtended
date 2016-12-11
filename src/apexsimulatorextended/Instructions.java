@@ -16,7 +16,7 @@ public class Instructions {
     /*
     This method is used for parsing the instruction string and convert it to a instruction class object & return that object 
     */
-    public Instructions ProcessInstruction(String instruction) {
+    public Instructions ProcessInstruction(String instruction, int pc_value) {
         if (instruction != null) {
             instruction = instruction.replace(",", " ");
             String[] Instruction = instruction.split("\\s+");
@@ -47,6 +47,7 @@ public class Instructions {
                 this.src2Register = Instruction[3];
             }
             this.instructionString = instruction;
+            this.pc_value = pc_value;
             return this;
         } else {
             return null;
