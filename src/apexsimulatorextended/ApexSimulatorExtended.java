@@ -600,6 +600,8 @@ public class ApexSimulatorExtended {
 						if (issueQueue.size() != 12) {
 
 							// issue queue processing
+							issue.src1Valid=true;
+							issue.src2Valid=true;
 							issue.fuType = 4;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
@@ -614,6 +616,8 @@ public class ApexSimulatorExtended {
 
 							// issue queue processing
 							issue.fuType = 4;
+							issue.src1Valid=true;
+							issue.src2Valid=true;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issueQueue.add(issue);
@@ -626,6 +630,8 @@ public class ApexSimulatorExtended {
 						if (issueQueue.size() != 12) {
 
 							// issue queue processing
+							issue.src1Valid=true;
+							issue.src2Valid=true;
 							issue.fuType = 4;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
@@ -645,6 +651,7 @@ public class ApexSimulatorExtended {
 							}
 							// issue queue processing
 							issue.fuType = 4;
+							issue.src2Valid=true;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issueQueue.add(issue);
@@ -656,6 +663,8 @@ public class ApexSimulatorExtended {
 						if (issueQueue.size() != 12) {
 
 							// issue queue processing
+							issue.src1Valid=true;
+							issue.src2Valid=true;
 							issue.fuType = 4;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
