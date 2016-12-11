@@ -275,10 +275,7 @@ public class ApexSimulatorExtended {
 					case "ADD":
 						if (!allocationList.isEmpty()
 								&& issueQueue.size() != 12 && ROB.size() != 40) {
-							rt.physicalRegister = allocationList.poll()
-									.toString();
-							rt.valid = false;
-							renameTable.put(ins.destRegister, rt);
+							
 							if (renameTable.get(ins.src1Register).valid == false)
 								issue.src1Valid = false;
 							else {
@@ -295,6 +292,24 @@ public class ApexSimulatorExtended {
 							}
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
+							
+							if(renameTable.get(ins.destRegister).physicalRegister==null){
+								rt.physicalRegister = allocationList.poll()
+										.toString();
+								rt.valid = false;
+								renameTable.put(ins.destRegister, rt);
+							}
+							else
+							{
+								rt.physicalRegister = allocationList.poll()
+										.toString();
+								allocationList.add(renameTable.get(ins.destRegister).physicalRegister);
+								rt.valid = false;
+								renameTable.put(ins.destRegister, rt);
+							}
+							
+							
+							
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
@@ -319,10 +334,6 @@ public class ApexSimulatorExtended {
 					case "SUB":
 						if (!allocationList.isEmpty()
 								&& issueQueue.size() != 12 && ROB.size() != 40) {
-							rt.physicalRegister = allocationList.poll()
-									.toString();
-							rt.valid = false;
-							renameTable.put(ins.destRegister, rt);
 							if (renameTable.get(ins.src1Register).valid == false)
 								issue.src1Valid = false;
 							else {
@@ -339,6 +350,23 @@ public class ApexSimulatorExtended {
 							}
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
+							
+							if(renameTable.get(ins.destRegister).physicalRegister==null){
+								rt.physicalRegister = allocationList.poll()
+										.toString();
+								rt.valid = false;
+								renameTable.put(ins.destRegister, rt);
+							}
+							else
+							{
+								rt.physicalRegister = allocationList.poll()
+										.toString();
+								allocationList.add(renameTable.get(ins.destRegister).physicalRegister);
+								rt.valid = false;
+								renameTable.put(ins.destRegister, rt);
+							}
+							
+							
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
@@ -363,10 +391,6 @@ public class ApexSimulatorExtended {
 					case "MUL":
 						if (!allocationList.isEmpty()
 								&& issueQueue.size() != 12 && ROB.size() != 40) {
-							rt.physicalRegister = allocationList.poll()
-									.toString();
-							rt.valid = false;
-							renameTable.put(ins.destRegister, rt);
 							if (renameTable.get(ins.src1Register).valid == false)
 								issue.src1Valid = false;
 							else {
@@ -383,6 +407,23 @@ public class ApexSimulatorExtended {
 							}
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
+							
+							if(renameTable.get(ins.destRegister).physicalRegister==null){
+								rt.physicalRegister = allocationList.poll()
+										.toString();
+								rt.valid = false;
+								renameTable.put(ins.destRegister, rt);
+							}
+							else
+							{
+								rt.physicalRegister = allocationList.poll()
+										.toString();
+								allocationList.add(renameTable.get(ins.destRegister).physicalRegister);
+								rt.valid = false;
+								renameTable.put(ins.destRegister, rt);
+							}
+							
+							
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
@@ -407,10 +448,6 @@ public class ApexSimulatorExtended {
 					case "AND":
 						if (!allocationList.isEmpty()
 								&& issueQueue.size() != 12 && ROB.size() != 40) {
-							rt.physicalRegister = allocationList.poll()
-									.toString();
-							rt.valid = false;
-							renameTable.put(ins.destRegister, rt);
 							if (renameTable.get(ins.src1Register).valid == false)
 								issue.src1Valid = false;
 							else {
@@ -427,6 +464,23 @@ public class ApexSimulatorExtended {
 							}
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
+							
+							
+							if(renameTable.get(ins.destRegister).physicalRegister==null){
+								rt.physicalRegister = allocationList.poll()
+										.toString();
+								rt.valid = false;
+								renameTable.put(ins.destRegister, rt);
+							}
+							else
+							{
+								rt.physicalRegister = allocationList.poll()
+										.toString();
+								allocationList.add(renameTable.get(ins.destRegister).physicalRegister);
+								rt.valid = false;
+								renameTable.put(ins.destRegister, rt);
+							}
+							
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
@@ -451,10 +505,6 @@ public class ApexSimulatorExtended {
 					case "OR":
 						if (!allocationList.isEmpty()
 								&& issueQueue.size() != 12 && ROB.size() != 40) {
-							rt.physicalRegister = allocationList.poll()
-									.toString();
-							rt.valid = false;
-							renameTable.put(ins.destRegister, rt);
 							if (renameTable.get(ins.src1Register).valid == false)
 								issue.src1Valid = false;
 							else {
@@ -471,6 +521,22 @@ public class ApexSimulatorExtended {
 							}
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
+							
+							if(renameTable.get(ins.destRegister).physicalRegister==null){
+								rt.physicalRegister = allocationList.poll()
+										.toString();
+								rt.valid = false;
+								renameTable.put(ins.destRegister, rt);
+							}
+							else
+							{
+								rt.physicalRegister = allocationList.poll()
+										.toString();
+								allocationList.add(renameTable.get(ins.destRegister).physicalRegister);
+								rt.valid = false;
+								renameTable.put(ins.destRegister, rt);
+							}
+							
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
@@ -495,10 +561,6 @@ public class ApexSimulatorExtended {
 					case "EX-OR":
 						if (!allocationList.isEmpty()
 								&& issueQueue.size() != 12 && ROB.size() != 40) {
-							rt.physicalRegister = allocationList.poll()
-									.toString();
-							rt.valid = false;
-							renameTable.put(ins.destRegister, rt);
 							if (renameTable.get(ins.src1Register).valid == false)
 								issue.src1Valid = false;
 							else {
@@ -515,6 +577,13 @@ public class ApexSimulatorExtended {
 							}
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
+							
+							//Register renaming
+							rt.physicalRegister = allocationList.poll()
+									.toString();
+							rt.valid = false;
+							renameTable.put(ins.destRegister, rt);
+							
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
@@ -570,10 +639,6 @@ public class ApexSimulatorExtended {
 					case "LOAD":
 						if (!allocationList.isEmpty()
 								&& issueQueue.size() != 12 && ROB.size() != 40) {
-							rt.physicalRegister = allocationList.poll()
-									.toString();
-							rt.valid = false;
-							renameTable.put(ins.destRegister, rt);
 							if (renameTable.get(ins.src1Register).valid == false)
 								issue.src1Valid = false;
 							else {
@@ -584,6 +649,13 @@ public class ApexSimulatorExtended {
 
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 
+							
+							//Register renaming
+							rt.physicalRegister = allocationList.poll()
+									.toString();
+							rt.valid = false;
+							renameTable.put(ins.destRegister, rt);
+							
 							// issue queue processing
 							issue.fuType = 3;
 							issue.destination = rt.physicalRegister;
@@ -1057,20 +1129,23 @@ public class ApexSimulatorExtended {
 
 	public static void updateIQ(int result, Instructions ins) {
 		for (int i = 0; i < issueQueue.size(); i++) {
-			Instructions IQins = issueQueue.get(i).ins;
-			if (IQins.opcode.equals("MOVC")
-					&& IQins.src1Register.equals(ins.destRegister)) {
-				issueQueue.get(i).valuesrc1 = result;
-				issueQueue.get(i).src1Valid = true;
+			IQ IQins = issueQueue.get(i);
+			if (IQins.ins.opcode.equals("MOVC")
+					&& IQins.ins.src1Register.equals(ins.destRegister)) {
+				IQins.valuesrc1 = result;
+				IQins.src1Valid = true;
+				issueQueue.set(i, IQins);
 				break;
 			}
-			if (IQins.src1Register.equalsIgnoreCase(ins.destRegister)) {
-				issueQueue.get(i).valuesrc1 = result;
-				issueQueue.get(i).src1Valid = true;
+			if (IQins.ins.src1Register.equalsIgnoreCase(ins.destRegister)) {
+				IQins.valuesrc1 = result;
+				IQins.src1Valid = true;
+				issueQueue.set(i, IQins);
 			}
-			if (IQins.src2Register.equalsIgnoreCase(ins.destRegister)) {
-				issueQueue.get(i).valuesrc2 = result;
-				issueQueue.get(i).src2Valid = true;
+			if (IQins.ins.src2Register.equalsIgnoreCase(ins.destRegister)) {
+				IQins.valuesrc2 = result;
+				IQins.src2Valid = true;
+				issueQueue.set(i, IQins);
 				break;
 			}
 		}
@@ -1080,7 +1155,6 @@ public class ApexSimulatorExtended {
 		if (pipeline.get(execute2) != null) {
 			Instructions ins = pipeline.get(execute2);
 			unifiedRegisterFile.put(ins.physicalDestRegister, ins.result);
-			allocationList.add(ins.physicalDestRegister);
 			renameTable.get(ins.destRegister).valid = true;
 			pipeline.put(writeALU, ins);
 			pipeline.put(execute2, null);
@@ -1092,7 +1166,6 @@ public class ApexSimulatorExtended {
 			Instructions ins = pipeline.get(LSFU2);
 			if (ins.opcode.equalsIgnoreCase("LOAD")) {
 				unifiedRegisterFile.put(ins.destRegister, ins.result);
-				allocationList.add(ins.physicalDestRegister);
 				renameTable.get(ins.destRegister).valid = true;
 			}
 			pipeline.put(writeLSFU, ins);
@@ -1106,7 +1179,6 @@ public class ApexSimulatorExtended {
 			Instructions ins = pipeline.get(multiply);
 			pipeline.put(writeMultiply, ins);
 			unifiedRegisterFile.put(ins.physicalDestRegister, ins.result);
-			allocationList.add(ins.physicalDestRegister);
 			renameTable.get(ins.destRegister).valid = true;
 		}
 
@@ -1137,20 +1209,15 @@ public class ApexSimulatorExtended {
 				unifiedRegisterFile.put("R" + i, 0);
 			}
 
-			for (int i = 16; i < sizeUrf; i++) {
-				unifiedRegisterFile.put("P" + i, 0);
-				allocationList.add("P" + i);
+			for (int j = 0; j < sizeUrf-17; j++) {
+				unifiedRegisterFile.put("P" + j, 0);
+				allocationList.add("P" + j);
 			}
 
 			unifiedRegisterFile.put("X", 0);
 
 			for (int k = 0; k < 4000; k++) {
 				memory[k] = 0;
-			}
-
-			for (int i = 16; i < sizeUrf; i++) {
-				unifiedRegisterFile.put("P" + i, 0);
-
 			}
 
 			initializePipeline();
