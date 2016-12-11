@@ -130,27 +130,27 @@ public class ApexSimulatorExtended {
 			case 4:
 				printMapTables();
 				break;
-			
+
 			case 5:
 				printIQ();
 				break;
-			
+
 			case 6:
 				printROB();
 				break;
-			
+
 			case 7:
 				printURF();
 				break;
-			
+
 			case 8:
 				printMemory();
 				break;
-			
+
 			case 9:
 				printStats();
 				break;
-			
+
 			case 10:
 				System.exit(1);
 				break;
@@ -216,17 +216,18 @@ public class ApexSimulatorExtended {
 		}
 		System.out.println();
 	}
-	
+
 	public static void printIQ()
 	{
 		//Print issue queue
 		System.out.println("\nIssue Queue:");
 		for (int i = 0; i < issueQueue.size(); i++) {
-			System.out.println(issueQueue.get(i).toString());
+			if(issueQueue.get(i)!=null)
+				System.out.println(issueQueue.get(i).toString());
 		}
 		System.out.println();
 	}
-	
+
 	public static void printROB()
 	{
 		//Print ROB
@@ -238,7 +239,7 @@ public class ApexSimulatorExtended {
 		}
 		System.out.println();
 	}
-	
+
 	public static void printURF()
 	{
 		int i = 0;
@@ -253,8 +254,9 @@ public class ApexSimulatorExtended {
 			if (i == 16)
 				System.out.println();
 		}
+		System.out.println();
 	}
-	
+
 	public static void printMemory()
 	{
 		Scanner sc = new Scanner(System.in);
@@ -262,7 +264,7 @@ public class ApexSimulatorExtended {
 		int i = sc.nextInt();
 		System.out.println("Enter the ending value of memory location to display");
 		int j = sc.nextInt();
-		
+
 		for(int x = i; x<=j; x++)
 		{
 			System.out.println("Memory Value At "+ x + " : " + memory[x]);
@@ -271,7 +273,7 @@ public class ApexSimulatorExtended {
 	}
 
 	public static void printStats() {
-		
+
 		//Print pipeline
 		System.out.println("\nPipeline:");
 		Iterator<Entry<String, Instructions>> it4 = pipeline.entrySet()
@@ -820,7 +822,7 @@ public class ApexSimulatorExtended {
 						break;
 					case "HALT":
 						if (issueQueue.size() != 12) {
-
+							
 							// issue queue processing
 							issue.src1Valid = true;
 							issue.src2Valid = true;
@@ -834,12 +836,9 @@ public class ApexSimulatorExtended {
 							isStall = true;
 						}
 						break;
-
 					}
-
 					pipeline.put(decode2, ins);
 					pipeline.put(decode1, null);
-
 				}
 
 			} else if (BranchTaken == true) {
@@ -856,7 +855,7 @@ public class ApexSimulatorExtended {
 			index = issueQueue.size();
 			for (int i = 0; i < index; i++) {
 				iq = issueQueue.get(index - 1);
-				if (iq.fuType == 1 && !iq.ins.opcode.equals("MOVC")
+				if (iq!=null && iq.fuType == 1 && !iq.ins.opcode.equals("MOVC")
 						&& iq.src1Valid == true && iq.src2Valid == true) {
 					switch (iq.ins.opcode) {
 					case "ADD":
@@ -871,7 +870,7 @@ public class ApexSimulatorExtended {
 						break;
 					}
 					break;
-				} else if (iq.fuType == 1 && iq.ins.opcode.equals("MOVC")) {
+				} else if (iq!=null && iq.fuType == 1 && iq.ins.opcode.equals("MOVC")) {
 					source1ALU = iq.literal;
 					pipeline.put(execute1, iq.ins);
 					issueQueue.remove(index - 1);
@@ -951,7 +950,7 @@ public class ApexSimulatorExtended {
 			index = issueQueue.size();
 			for (int i = 0; i < index; i++) {
 				iq = issueQueue.get(index - 1);
-				if (iq.fuType == 3 && iq.src1Valid == true
+				if (iq!=null && iq.fuType == 3 && iq.src1Valid == true
 						&& iq.src2Valid == true) {
 					switch (iq.ins.opcode) {
 					case "LOAD":
@@ -1009,7 +1008,7 @@ public class ApexSimulatorExtended {
 			index = issueQueue.size();
 			for (int i = 0; i < index; i++) {
 				iq = issueQueue.get(index - 1);
-				if (iq.fuType == 2 && iq.src1Valid == true
+				if (iq!=null && iq.fuType == 2 && iq.src1Valid == true
 						&& iq.src2Valid == true) {
 					issueQueue.remove(i);
 					counter--;
@@ -1042,8 +1041,7 @@ public class ApexSimulatorExtended {
 				index = issueQueue.size();
 				for (int i = 0; i < index; i++) {
 					iq = issueQueue.get(index - 1);
-					if (iq.fuType == 4 && iq.src1Valid == true
-							&& iq.src2Valid == true) {
+					if (iq!=null && iq.fuType == 4 && iq.src1Valid == true && iq.src2Valid == true) {
 						issueQueue.remove(index - 1);
 						switch (iq.ins.opcode) {
 						case "BZ":
@@ -1086,10 +1084,14 @@ public class ApexSimulatorExtended {
 							BranchTaken = true;
 							updateROB(0, iq.ins, true);
 							break;
+						case "HALT":
+							updateROB(0, iq.ins, true);
+							break;
 						}
+						pipeline.put(branchALU1, iq.ins);
 						break;
 					}
-					pipeline.put(branchALU1, iq.ins);
+
 				}
 			}
 		}
@@ -1124,6 +1126,11 @@ public class ApexSimulatorExtended {
 					r_rat.put(rob.destinationRegsiter, rt);
 					ROB.remove();
 				}
+			}
+			else if(instruction.opcode.equalsIgnoreCase("HALT"))
+			{
+				HALTFLAG = true;
+				ROB.remove();
 			}
 			else
 			{
@@ -1173,23 +1180,30 @@ public class ApexSimulatorExtended {
 	public static void updateIQ(int result, Instructions ins) {
 		for (int i = 0; i < issueQueue.size(); i++) {
 			IQ IQins = issueQueue.get(i);
-			if (IQins.ins.opcode.equals("MOVC")
-					&& IQins.ins.src1Register.equals(ins.destRegister)) {
-				IQins.valuesrc1 = result;
-				IQins.src1Valid = true;
-				issueQueue.set(i, IQins);
-				break;
-			}
-			if (IQins.ins.src1Register.equalsIgnoreCase(ins.destRegister)) {
-				IQins.valuesrc1 = result;
-				IQins.src1Valid = true;
-				issueQueue.set(i, IQins);
-			}
-			if (IQins.ins.src2Register.equalsIgnoreCase(ins.destRegister)) {
-				IQins.valuesrc2 = result;
-				IQins.src2Valid = true;
-				issueQueue.set(i, IQins);
-				break;
+			if(IQins != null)
+			{	
+				if ((IQins.ins.opcode.equals("MOVC") || IQins.ins.opcode.equals("LOAD")) && IQins.ins.src1Register.equals(ins.destRegister)) {
+					IQins.valuesrc1 = result;
+					IQins.src1Valid = true;
+					issueQueue.set(i, IQins);
+					break;
+				}
+
+				else 
+				{
+					if (IQins.ins.src1Register.equalsIgnoreCase(ins.destRegister)) {
+
+						IQins.valuesrc1 = result;
+						IQins.src1Valid = true;
+						issueQueue.set(i, IQins);
+					}
+					if (IQins.ins.src2Register.equalsIgnoreCase(ins.destRegister)) {
+						IQins.valuesrc2 = result;
+						IQins.src2Valid = true;
+						issueQueue.set(i, IQins);
+						break;
+					}
+				}
 			}
 		}
 	}
