@@ -576,6 +576,7 @@ public class ApexSimulatorExtended {
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issueQueue.add(issue);
+                                                        branchStall=true;
 						} else {
 							isStall = true;
 						}
@@ -588,6 +589,7 @@ public class ApexSimulatorExtended {
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issueQueue.add(issue);
+                                                        branchStall=true;
 						} else {
 							isStall = true;
 						}
@@ -698,12 +700,24 @@ public class ApexSimulatorExtended {
 			switch(opcode){
 			case "ADD":
 				result=source1ALU+source2ALU;
+                                 if (result== 0 && ins.pc_value+4==BranchPcValue) {
+                                                  ZeroFlag = 1;
+                                                } else {
+                                               ZeroFlag = 0;
+                                                  }
+			
 				ins.result=result;
 				updateIQ(result,ins);
 				updateROB(result, ins,false);
 				break;
 			case "SUB":
 				result=source1ALU-source2ALU;
+                                 if(result== 0 && ins.pc_value+4==BranchPcValue) {
+                                                  ZeroFlag = 1;
+                                                } else {
+                                               ZeroFlag = 0;
+                                                  }
+			
 				ins.result=result;
 				updateIQ(result,ins);
 				updateROB(result, ins,false);
@@ -819,7 +833,7 @@ public class ApexSimulatorExtended {
 						source1MUL=iq.valuesrc1;
 						source2MUL=iq.valuesrc2;
 						iq.ins.result=source1MUL*source2MUL;
-						if ( iq.ins.result == 0) {
+                                                  if ( iq.ins.result == 0 && iq.ins.pc_value+4==BranchPcValue) {
 							ZeroFlag = 1;
 						} else {
 							ZeroFlag = 0;
