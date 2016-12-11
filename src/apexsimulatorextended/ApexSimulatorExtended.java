@@ -186,13 +186,15 @@ public class ApexSimulatorExtended {
 		}
 	}
 
-	private static void Issue() {
+	public static void Issue() {
 		if (pipeline.get(decode2) != null && BranchTaken==false) {
 			issueQueue.add(putInQ);
 			pipeline.put(issueQ, pipeline.get(decode2));
 			pipeline.put(decode2, null);
 			putInQ = null;
 		}
+		else
+			pipeline.put(issueQ, null);
 
 	}
 
