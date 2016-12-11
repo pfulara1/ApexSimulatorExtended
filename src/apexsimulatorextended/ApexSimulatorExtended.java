@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -120,7 +121,7 @@ public class ApexSimulatorExtended {
 
 			case 3:
 				// Display the register and memory contents
-				// Display();
+				Display();
 				break;
 
 			case 4:
@@ -157,6 +158,33 @@ public class ApexSimulatorExtended {
 			Decode1();
 			FetchStage();
 
+		}
+	}
+
+	private static void Display() {
+		ROB[] rob_array = ROB.getQ();
+		System.out.println("ROB:");
+		for(int i=0;i<rob_array.length;i++){
+			if(rob_array[i]!=null)
+				System.out.println(rob_array[i].toString());
+		}
+		System.out.println("\nIssue Queue:");
+		for(int i=0;i<issueQueue.size();i++){
+			System.out.println(issueQueue.get(i).toString());
+		}
+		int i=0;
+		Iterator<Entry<String, Integer>> it1 =unifiedRegisterFile.entrySet().iterator();
+		System.out.println("URF:");
+		while(it1.hasNext()){
+				System.out.print(it1.next()+"\t");i++;
+				if(i==16)
+					System.out.println();
+		}
+		System.out.println();
+		Iterator<Entry<String, RenameTable>> it2 = renameTable.entrySet().iterator();
+		System.out.println("\nRename Table:");
+		while(it2.hasNext()){
+			System.out.println(it2.next());
 		}
 	}
 
@@ -924,7 +952,7 @@ public class ApexSimulatorExtended {
 		rob_array = ROB.getQ();
 		ROB rob = new ROB();
 		rob = rob_array[ROB.getHeadIndex()];
-		if(rob != null && rob.isValid)
+		if(rob != null && rob.isValid && !rob.isBranchTaken)
 		{
 			unifiedRegisterFile.put(rob.destinationRegsiter, rob.value);
 			r_rat.put(rob.destinationRegsiter, rob.physicalRegister);
