@@ -57,8 +57,7 @@ public class Instructions {
     @Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return "instr:"+opcode+"\tsrc1:"+src1Register+"\tsrc2:"+src2Register+"\tdest:"+destRegister
-				+"\tliteral:"+literal;
+		return instructionString;
 	}
 }
 

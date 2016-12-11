@@ -134,8 +134,7 @@ public class ApexSimulatorExtended {
 
 	public static void Simulate() {
 
-		System.out
-				.println("Please enter the total number of cycles you want to simulate:");
+		System.out.println("Please enter the total number of cycles you want to simulate:");
 		Scanner sc = new Scanner(System.in);
 		int cycles = sc.nextInt();
 		for (int i = 1; i <= cycles; i++) {
@@ -161,7 +160,7 @@ public class ApexSimulatorExtended {
 	}
 
 	private static void Issue() {
-		if (pipeline.get(decode2) != null) {
+		if (pipeline.get(decode2) != null && BranchTaken==false) {
 			issueQueue.add(putInQ);
 			pipeline.put(issueQ, pipeline.get(decode2));
 			pipeline.put(decode2, null);
@@ -663,6 +662,7 @@ public class ApexSimulatorExtended {
 							ins.pc_value = getKeyByValue(InstructionMap,
 									ins.instructionString);
 							issue.ins = ins;
+                                                        issue.src2Valid = true;
 							issue.literal = ins.literal;
 							putInQ = issue;
 
@@ -728,7 +728,7 @@ public class ApexSimulatorExtended {
 							rob.pc = ins.pc_value;
 							ROB.add(rob);
 							putInQ = issue;
-							branchStall = true;
+							
 						} else {
 							isStall = true;
 						}
@@ -747,7 +747,7 @@ public class ApexSimulatorExtended {
 							rob.pc = ins.pc_value;
 							ROB.add(rob);
 							putInQ = issue;
-							branchStall = true;
+							
 						} else {
 							isStall = true;
 						}
@@ -844,14 +844,14 @@ public class ApexSimulatorExtended {
 						source1ALU = iq.valuesrc1;
 						source2ALU = iq.valuesrc2;
 						pipeline.put(execute1, iq.ins);
-						issueQueue.remove(i);
+						issueQueue.remove(index - 1);
 						break;
 					}
 					break;
 				} else if (iq.fuType == 1 && iq.ins.opcode.equals("MOVC")) {
 					source1ALU = iq.literal;
 					pipeline.put(execute1, iq.ins);
-					issueQueue.remove(i);
+					issueQueue.remove(index - 1);
 					break;
 				} else {
 					index--;
@@ -938,14 +938,14 @@ public class ApexSimulatorExtended {
 						source2LSFU = iq.literal;
 						resultLSFU1 = source1LSFU + source2LSFU;
 						pipeline.put(LSFU1, iq.ins);
-						issueQueue.remove(i);
+						issueQueue.remove(index - 1);
 						break;
 					case "STORE":
 						source1LSFU = iq.valuesrc1;
 						source2LSFU = iq.valuesrc2;
 						resultLSFU1 = source2LSFU + iq.literal;
 						pipeline.put(LSFU1, iq.ins);
-						issueQueue.remove(i);
+						issueQueue.remove(index - 1);
 						break;
 					}
 					break;
@@ -1017,17 +1017,15 @@ public class ApexSimulatorExtended {
 	public static void Branch() {
 		if (!issueQueue.isEmpty()) {
 
-			if (branchStall == false) {
-				isStall = false;
-				IQ iq;
+			if (BranchTaken == false) {
+			        IQ iq;
 				index = issueQueue.size();
 				for (int i = 0; i < index; i++) {
 					iq = issueQueue.get(index - 1);
 					if (iq.fuType == 4 && iq.src1Valid == true
 							&& iq.src2Valid == true) {
-						issueQueue.remove(i);
+						issueQueue.remove(index - 1);
 						switch (iq.ins.opcode) {
-
 						case "BZ":
 							if (ZeroFlag == 1) {
 								// Instruction flushed at fetch and decode
@@ -1037,7 +1035,6 @@ public class ApexSimulatorExtended {
 								BranchPcValue = 0;
 								BranchTaken = true;
 								updateROB(0, iq.ins, true);
-
 							}
 							break;
 						case "BNZ":
@@ -1049,7 +1046,6 @@ public class ApexSimulatorExtended {
 								BranchPcValue = 0;
 								BranchTaken = true;
 								updateROB(0, iq.ins, true);
-
 							}
 							break;
 						case "JUMP":
@@ -1070,9 +1066,10 @@ public class ApexSimulatorExtended {
 							BranchTaken = true;
 							updateROB(0, iq.ins, true);
 							break;
-
 						}
+                                           break;
 					}
+                                        pipeline.put(branchALU1, iq.ins);
 				}
 			}
 		}
@@ -1080,7 +1077,8 @@ public class ApexSimulatorExtended {
 
 	public static void Commit() {
 
-		ROB rob_array[] = null;
+		pipeline.put(branchALU1, null);
+                ROB rob_array[] = null;
 		rob_array = ROB.getQ();
 		ROB rob = new ROB();
 		rob = rob_array[ROB.getHeadIndex()];
@@ -1100,7 +1098,7 @@ public class ApexSimulatorExtended {
 			// rolling back ROB for the entries that follow BR if branch is
 			// taken
 			int robHead = ROB.getHeadIndex();
-			for (int i = robHead; i < ROB.size(); i++) {
+			for (int i = robHead; i < ROB.size()+robHead; i++) {
 				ROB.remove();
 			}
 
