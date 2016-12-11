@@ -1143,11 +1143,13 @@ public class ApexSimulatorExtended {
 			else
 			{
 				RenameTable rt = new RenameTable();
-				if (rob != null && rob.isValid && !rob.isBranchTaken) {
+				if (rob != null && rob.isValid && !rob.isBranchTaken && !instruction.opcode.equalsIgnoreCase("BNZ") && !instruction.opcode.equalsIgnoreCase("BZ") && !instruction.opcode.equalsIgnoreCase("BAL") && !instruction.opcode.equalsIgnoreCase("JUMP")) {
 					unifiedRegisterFile.put(rob.destinationRegsiter, rob.value);
 					rt.physicalRegister = rob.physicalRegister;
 					rt.valid = true;
 					r_rat.put(rob.destinationRegsiter, rt);
+					ROB.remove();
+				} else if (rob != null && rob.isValid && !rob.isBranchTaken && (instruction.opcode.equalsIgnoreCase("BNZ") || instruction.opcode.equalsIgnoreCase("BZ") || instruction.opcode.equalsIgnoreCase("BAL") || instruction.opcode.equalsIgnoreCase("JUMP"))) {
 					ROB.remove();
 				} else if (rob != null && rob.isValid && rob.isBranchTaken) {
 					BranchTaken = false;
@@ -1162,6 +1164,7 @@ public class ApexSimulatorExtended {
 						renameTable.put(tempStr, _rt);
 					}
 					//r_rat.clear();
+					
 					// remove the branch instruction from ROB
 					ROB.remove();
 
