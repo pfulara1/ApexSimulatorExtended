@@ -96,11 +96,16 @@ public class ApexSimulatorExtended {
 	public static void main(String[] args) throws IOException {
 		Scanner sc = new Scanner(System.in);
 		do {
-			System.out.print("Press 1 to Initialize:\n");
-			System.out.print("Press 2 Simulate(n) Intruction:\n");
-			System.out.print("Press 3 Display:\n");
-			System.out.print("Press 4 Set_URF_Size\n");
-			System.out.print("Press 5 Exit:\n");
+			System.out.print("Press 1 to Initialize\n");
+			System.out.print("Press 2 Simulate(n) Intruction\n");
+			System.out.print("Press 3 Set_URF_Size\n");
+			System.out.print("Press 4 Print_map_tables\n");
+			System.out.print("Press 5 Print_IQ\n");
+			System.out.print("Press 6 Print_ROB\n");
+			System.out.print("Press 7 Print_URF\n");
+			System.out.print("Press 8 Print_Memory <a1> <a2>\n");
+			System.out.print("Press 9 Print_Stats\n");
+			System.out.print("Press 10 Exit\n");
 
 			System.out.print("Please Enter your choice:\n\n");
 
@@ -118,14 +123,35 @@ public class ApexSimulatorExtended {
 				break;
 
 			case 3:
-				// Display the register and memory contents
-				Display();
+				//Sets the custom URF size
+				changeUrfSize();
 				break;
 
 			case 4:
-				changeUrfSize();
+				printMapTables();
 				break;
+			
 			case 5:
+				printIQ();
+				break;
+			
+			case 6:
+				printROB();
+				break;
+			
+			case 7:
+				printURF();
+				break;
+			
+			case 8:
+				printMemory();
+				break;
+			
+			case 9:
+				printStats();
+				break;
+			
+			case 10:
 				System.exit(1);
 				break;
 			}
@@ -170,7 +196,37 @@ public class ApexSimulatorExtended {
 
 	}
 
-	private static void Display() {
+	public static void printMapTables()
+	{
+		//Prints rename table
+		Iterator<Entry<String, RenameTable>> it2 = renameTable.entrySet().iterator();
+		System.out.println("\nRename Table:");
+		while (it2.hasNext()) {
+			System.out.println(it2.next());
+		}
+		System.out.println();
+
+		//Prints R-RAT
+		System.out.println("\nR-RAT:");
+		Iterator<Entry<String, RenameTable>> it3 = r_rat.entrySet().iterator();
+		while (it3.hasNext()) {
+			System.out.println(it3.next());
+		}
+		System.out.println();
+	}
+	
+	public static void printIQ()
+	{
+		//Print issue queue
+		System.out.println("\nIssue Queue:");
+		for (int i = 0; i < issueQueue.size(); i++) {
+			System.out.println(issueQueue.get(i).toString());
+		}
+		System.out.println();
+	}
+	
+	public static void printROB()
+	{
 		//Print ROB
 		ROB[] rob_array = ROB.getQ();
 		System.out.println("ROB:");
@@ -178,12 +234,11 @@ public class ApexSimulatorExtended {
 			if (rob_array[i] != null)
 				System.out.println(rob_array[i].toString());
 		}
-
-		//Print issue queue
-		System.out.println("\nIssue Queue:");
-		for (int i = 0; i < issueQueue.size(); i++) {
-			System.out.println(issueQueue.get(i).toString());
-		}
+		System.out.println();
+	}
+	
+	public static void printURF()
+	{
 		int i = 0;
 
 		//Print URF
@@ -196,24 +251,25 @@ public class ApexSimulatorExtended {
 			if (i == 16)
 				System.out.println();
 		}
+	}
+	
+	public static void printMemory()
+	{
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Enter the starting value of memory location to display");
+		int i = sc.nextInt();
+		System.out.println("Enter the ending value of memory location to display");
+		int j = sc.nextInt();
+		
+		for(int x = i; x<=j; x++)
+		{
+			System.out.println("Memory Value At "+ x + " : " + memory[x]);
+		}
 		System.out.println();
+	}
 
-		//Print rename table
-		Iterator<Entry<String, RenameTable>> it2 = renameTable.entrySet()
-				.iterator();
-		System.out.println("\nRename Table:");
-		while (it2.hasNext()) {
-			System.out.println(it2.next());
-		}
-
-		//Print R-RAT
-		System.out.println("\nR-RAT:");
-		Iterator<Entry<String, RenameTable>> it3 = r_rat.entrySet()
-				.iterator();
-		while (it3.hasNext()) {
-			System.out.println(it3.next());
-		}
-
+	public static void printStats() {
+		
 		//Print pipeline
 		System.out.println("\nPipeline:");
 		Iterator<Entry<String, Instructions>> it4 = pipeline.entrySet()
@@ -1084,7 +1140,7 @@ public class ApexSimulatorExtended {
 		rob_array = ROB.getQ();
 		ROB rob = new ROB();
 		rob = rob_array[ROB.getHeadIndex()];
-		
+
 		if(rob != null)
 		{
 			String ins = InstructionMap.get(rob.pc);
