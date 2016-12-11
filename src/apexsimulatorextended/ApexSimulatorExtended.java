@@ -593,6 +593,9 @@ public class ApexSimulatorExtended {
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issue.literal=ins.literal;
+							rob.memoryAddressForStore=0;
+							rob.pc=ins.pc_value;
+							ROB.add(rob);
 							putInQ=issue;
 							
 						} else {
@@ -608,6 +611,8 @@ public class ApexSimulatorExtended {
 							issue.fuType = 4;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
+							rob.pc=ins.pc_value;
+							ROB.add(rob);
 							putInQ=issue;   
 							branchStall=true;
 						} else {
@@ -623,6 +628,8 @@ public class ApexSimulatorExtended {
 							issue.src2Valid=true;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
+							rob.pc=ins.pc_value;
+							ROB.add(rob);
 							putInQ=issue;   
 							branchStall=true;
 						} else {
@@ -638,6 +645,8 @@ public class ApexSimulatorExtended {
 							issue.fuType = 4;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
+							rob.pc=ins.pc_value;
+							ROB.add(rob);
 							putInQ=issue;
 						} else {
 							isStall = true;
@@ -657,6 +666,8 @@ public class ApexSimulatorExtended {
 							issue.src2Valid=true;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
+							rob.pc=ins.pc_value;
+							ROB.add(rob);
 							putInQ=issue;
 						} else {
 							isStall = true;
@@ -671,6 +682,8 @@ public class ApexSimulatorExtended {
 							issue.fuType = 4;
 							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
+							rob.pc=ins.pc_value;
+							ROB.add(rob);
 							putInQ=issue;
 						} else {
 							isStall = true;
