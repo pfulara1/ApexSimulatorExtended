@@ -1151,7 +1151,17 @@ public class ApexSimulatorExtended {
 					ROB.remove();
 				} else if (rob != null && rob.isValid && rob.isBranchTaken) {
 					BranchTaken = false;
-					renameTable = r_rat;
+					renameTable.clear();
+					Iterator<Entry<String, RenameTable>> it = r_rat.entrySet().iterator();
+					while(it.hasNext()){
+						Entry<String, RenameTable> temp =  it.next();
+						RenameTable _rt = new RenameTable();
+						_rt = temp.getValue();
+						String tempStr = new String();
+						tempStr = temp.getKey();
+						renameTable.put(tempStr, _rt);
+					}
+					//r_rat.clear();
 					// remove the branch instruction from ROB
 					ROB.remove();
 
