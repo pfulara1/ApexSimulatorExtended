@@ -59,10 +59,11 @@ public class ApexSimulatorExtended {
 	public static int resultLSFU1;
 	public static int literal_zero = 0000;
 	public static int source1ALU, source2ALU, source1MUL, source2MUL,
-			source1Branch, source2Branch, source1LSFU, source2LSFU;
+	source1Branch, source2Branch, source1LSFU, source2LSFU;
 	public static int counter = 0;
 	public static boolean branchStall = false;
 	public static IQ putInQ = new IQ();
+	public static boolean loadStoreRobHead = false;
 
 	/*
 	 * This function take the file path as a argument read the file line by line
@@ -177,14 +178,14 @@ public class ApexSimulatorExtended {
 			if (rob_array[i] != null)
 				System.out.println(rob_array[i].toString());
 		}
-		
+
 		//Print issue queue
 		System.out.println("\nIssue Queue:");
 		for (int i = 0; i < issueQueue.size(); i++) {
 			System.out.println(issueQueue.get(i).toString());
 		}
 		int i = 0;
-		
+
 		//Print URF
 		Iterator<Entry<String, Integer>> it1 = unifiedRegisterFile.entrySet()
 				.iterator();
@@ -196,7 +197,7 @@ public class ApexSimulatorExtended {
 				System.out.println();
 		}
 		System.out.println();
-		
+
 		//Print rename table
 		Iterator<Entry<String, RenameTable>> it2 = renameTable.entrySet()
 				.iterator();
@@ -212,7 +213,7 @@ public class ApexSimulatorExtended {
 		while (it3.hasNext()) {
 			System.out.println(it3.next());
 		}
-		
+
 		//Print pipeline
 		System.out.println("\nPipeline:");
 		Iterator<Entry<String, Instructions>> it4 = pipeline.entrySet()
@@ -274,7 +275,7 @@ public class ApexSimulatorExtended {
 					case "ADD":
 						if (!allocationList.isEmpty()
 								&& issueQueue.size() != 12 && ROB.size() != 40) {
-							
+
 							if (renameTable.get(ins.src1Register).valid == false)
 								issue.src1Valid = false;
 							else {
@@ -291,7 +292,7 @@ public class ApexSimulatorExtended {
 							}
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
-							
+
 							if(renameTable.get(ins.destRegister).physicalRegister==null){
 								rt.physicalRegister = allocationList.poll()
 										.toString();
@@ -306,9 +307,9 @@ public class ApexSimulatorExtended {
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
-							
-							
-							
+
+
+
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
@@ -349,7 +350,7 @@ public class ApexSimulatorExtended {
 							}
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
-							
+
 							if(renameTable.get(ins.destRegister).physicalRegister==null){
 								rt.physicalRegister = allocationList.poll()
 										.toString();
@@ -364,8 +365,8 @@ public class ApexSimulatorExtended {
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
-							
-							
+
+
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
@@ -406,7 +407,7 @@ public class ApexSimulatorExtended {
 							}
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
-							
+
 							if(renameTable.get(ins.destRegister).physicalRegister==null){
 								rt.physicalRegister = allocationList.poll()
 										.toString();
@@ -421,8 +422,8 @@ public class ApexSimulatorExtended {
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
-							
-							
+
+
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
@@ -463,8 +464,8 @@ public class ApexSimulatorExtended {
 							}
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
-							
-							
+
+
 							if(renameTable.get(ins.destRegister).physicalRegister==null){
 								rt.physicalRegister = allocationList.poll()
 										.toString();
@@ -479,7 +480,7 @@ public class ApexSimulatorExtended {
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
-							
+
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
@@ -520,7 +521,7 @@ public class ApexSimulatorExtended {
 							}
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
-							
+
 							if(renameTable.get(ins.destRegister).physicalRegister==null){
 								rt.physicalRegister = allocationList.poll()
 										.toString();
@@ -535,7 +536,7 @@ public class ApexSimulatorExtended {
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
-							
+
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
@@ -576,13 +577,13 @@ public class ApexSimulatorExtended {
 							}
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
-							
+
 							//Register renaming
 							rt.physicalRegister = allocationList.poll()
 									.toString();
 							rt.valid = false;
 							renameTable.put(ins.destRegister, rt);
-							
+
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
@@ -648,13 +649,13 @@ public class ApexSimulatorExtended {
 
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 
-							
+
 							//Register renaming
 							rt.physicalRegister = allocationList.poll()
 									.toString();
 							rt.valid = false;
 							renameTable.put(ins.destRegister, rt);
-							
+
 							// issue queue processing
 							issue.fuType = 3;
 							issue.destination = rt.physicalRegister;
@@ -662,7 +663,7 @@ public class ApexSimulatorExtended {
 							ins.pc_value = getKeyByValue(InstructionMap,
 									ins.instructionString);
 							issue.ins = ins;
-                                                        issue.src2Valid = true;
+							issue.src2Valid = true;
 							issue.literal = ins.literal;
 							putInQ = issue;
 
@@ -728,7 +729,7 @@ public class ApexSimulatorExtended {
 							rob.pc = ins.pc_value;
 							ROB.add(rob);
 							putInQ = issue;
-							
+
 						} else {
 							isStall = true;
 						}
@@ -747,7 +748,7 @@ public class ApexSimulatorExtended {
 							rob.pc = ins.pc_value;
 							ROB.add(rob);
 							putInQ = issue;
-							
+
 						} else {
 							isStall = true;
 						}
@@ -960,7 +961,7 @@ public class ApexSimulatorExtended {
 
 	public static void ExecuteLSFU2() {
 
-		if (pipeline.get(LSFU1) != null) {
+		if (loadStoreRobHead && pipeline.get(LSFU1) != null) {
 			Instructions ins = pipeline.get(LSFU1);
 
 			String opcode = ins.opcode;
@@ -974,7 +975,8 @@ public class ApexSimulatorExtended {
 				break;
 			case "STORE":
 				ins.result = source1LSFU;
-				updateROB(resultLSFU1, ins, false);
+				memory[resultLSFU1] = ins.result;
+				ROB.remove();
 				break;
 			}
 
@@ -1018,7 +1020,7 @@ public class ApexSimulatorExtended {
 		if (!issueQueue.isEmpty()) {
 
 			if (BranchTaken == false) {
-			        IQ iq;
+				IQ iq;
 				index = issueQueue.size();
 				for (int i = 0; i < index; i++) {
 					iq = issueQueue.get(index - 1);
@@ -1067,9 +1069,9 @@ public class ApexSimulatorExtended {
 							updateROB(0, iq.ins, true);
 							break;
 						}
-                                           break;
+						break;
 					}
-                                        pipeline.put(branchALU1, iq.ins);
+					pipeline.put(branchALU1, iq.ins);
 				}
 			}
 		}
@@ -1078,32 +1080,57 @@ public class ApexSimulatorExtended {
 	public static void Commit() {
 
 		pipeline.put(branchALU1, null);
-                ROB rob_array[] = null;
+		ROB rob_array[] = null;
 		rob_array = ROB.getQ();
 		ROB rob = new ROB();
 		rob = rob_array[ROB.getHeadIndex()];
-		RenameTable rt = new RenameTable();
-		if (rob != null && rob.isValid && !rob.isBranchTaken) {
-			unifiedRegisterFile.put(rob.destinationRegsiter, rob.value);
-			rt.physicalRegister = rob.physicalRegister;
-			rt.valid = true;
-			r_rat.put(rob.destinationRegsiter, rt);
-			ROB.remove();
-		} else if (rob != null && rob.isValid && rob.isBranchTaken) {
-			BranchTaken = false;
-			renameTable = r_rat;
-			// remove the branch instruction from ROB
-			ROB.remove();
+		
+		if(rob != null)
+		{
+			String ins = InstructionMap.get(rob.pc);
+			Instructions instruction = new Instructions();
+			instruction = instruction.ProcessInstruction(ins);
 
-			// rolling back ROB for the entries that follow BR if branch is
-			// taken
-			int robHead = ROB.getHeadIndex();
-			for (int i = robHead; i < ROB.size()+robHead; i++) {
-				ROB.remove();
+			if(instruction.opcode.equalsIgnoreCase("STORE"))
+			{
+				loadStoreRobHead = true;
 			}
+			else if(instruction.opcode.equalsIgnoreCase("LOAD"))
+			{
+				loadStoreRobHead = true;
+				RenameTable rt = new RenameTable();
+				if (rob.isValid && !rob.isBranchTaken) {
+					unifiedRegisterFile.put(rob.destinationRegsiter, rob.value);
+					rt.physicalRegister = rob.physicalRegister;
+					rt.valid = true;
+					r_rat.put(rob.destinationRegsiter, rt);
+					ROB.remove();
+				}
+			}
+			else
+			{
+				RenameTable rt = new RenameTable();
+				if (rob != null && rob.isValid && !rob.isBranchTaken) {
+					unifiedRegisterFile.put(rob.destinationRegsiter, rob.value);
+					rt.physicalRegister = rob.physicalRegister;
+					rt.valid = true;
+					r_rat.put(rob.destinationRegsiter, rt);
+					ROB.remove();
+				} else if (rob != null && rob.isValid && rob.isBranchTaken) {
+					BranchTaken = false;
+					renameTable = r_rat;
+					// remove the branch instruction from ROB
+					ROB.remove();
 
+					// rolling back ROB for the entries that follow BR if branch is
+					// taken
+					int robHead = ROB.getHeadIndex();
+					for (int i = robHead; i < ROB.size()+robHead; i++) {
+						ROB.remove();
+					}
+				}
+			}
 		}
-
 	}
 
 	public static void updateROB(int result, Instructions ins,
@@ -1222,7 +1249,7 @@ public class ApexSimulatorExtended {
 			System.out.println("All Initialization Complete\n");
 		} else
 			System.out
-					.println("Initialization cannot be done, URF size should be greater than default size:32");
+			.println("Initialization cannot be done, URF size should be greater than default size:32");
 
 	}
 
