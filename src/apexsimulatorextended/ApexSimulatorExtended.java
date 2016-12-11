@@ -240,7 +240,8 @@ public class ApexSimulatorExtended {
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
-							issue.ins.physicalDestRegister = rt.physicalRegister;
+							ins.physicalDestRegister = rt.physicalRegister;
+							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issueQueue.add(issue);
 
@@ -282,6 +283,8 @@ public class ApexSimulatorExtended {
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
+							ins.physicalDestRegister = rt.physicalRegister;
+							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issueQueue.add(issue);
 
@@ -323,6 +326,8 @@ public class ApexSimulatorExtended {
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
+							ins.physicalDestRegister = rt.physicalRegister;
+							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issueQueue.add(issue);
 
@@ -364,6 +369,8 @@ public class ApexSimulatorExtended {
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
+							ins.physicalDestRegister = rt.physicalRegister;
+							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issueQueue.add(issue);
 
@@ -405,6 +412,8 @@ public class ApexSimulatorExtended {
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
+							ins.physicalDestRegister = rt.physicalRegister;
+							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issueQueue.add(issue);
 
@@ -446,6 +455,8 @@ public class ApexSimulatorExtended {
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
+							ins.physicalDestRegister = rt.physicalRegister;
+							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issueQueue.add(issue);
 
@@ -472,6 +483,8 @@ public class ApexSimulatorExtended {
 							// issue queue processing
 							issue.fuType = 1;
 							issue.destination = rt.physicalRegister;
+							ins.physicalDestRegister = rt.physicalRegister;
+							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issue.literal=ins.literal;
 							issueQueue.add(issue);
@@ -507,6 +520,8 @@ public class ApexSimulatorExtended {
 							// issue queue processing
 							issue.fuType = 3;
 							issue.destination = rt.physicalRegister;
+							ins.physicalDestRegister = rt.physicalRegister;
+							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issue.literal=ins.literal;
 							issueQueue.add(issue);
@@ -545,6 +560,7 @@ public class ApexSimulatorExtended {
 							// issue queue processing
 							issue.fuType = 3;
 							issue.destination = rt.physicalRegister;
+							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issue.literal=ins.literal;
 							issueQueue.add(issue);
@@ -557,6 +573,7 @@ public class ApexSimulatorExtended {
 
 							// issue queue processing
 							issue.fuType = 4;
+							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issueQueue.add(issue);
 						} else {
@@ -568,6 +585,7 @@ public class ApexSimulatorExtended {
 
 							// issue queue processing
 							issue.fuType = 4;
+							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issueQueue.add(issue);
 						} else {
@@ -579,6 +597,7 @@ public class ApexSimulatorExtended {
 
 							// issue queue processing
 							issue.fuType = 4;
+							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issueQueue.add(issue);
 						} else {
@@ -596,6 +615,7 @@ public class ApexSimulatorExtended {
 							}
 							// issue queue processing
 							issue.fuType = 4;
+							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issueQueue.add(issue);
 						} else {
@@ -607,6 +627,7 @@ public class ApexSimulatorExtended {
 
 							// issue queue processing
 							issue.fuType = 4;
+							ins.pc_value = getKeyByValue(InstructionMap,ins.instructionString);
 							issue.ins = ins;
 							issueQueue.add(issue);
 						} else {
@@ -709,7 +730,7 @@ public class ApexSimulatorExtended {
 				result=literal_zero+source1ALU;
 				ins.result=result;
 				updateIQ(result, ins);
-				updateROB(result, ins,false);
+				updateROB(result, ins, false);
 				break;
 			}
 
@@ -893,6 +914,7 @@ public class ApexSimulatorExtended {
 		{
 			unifiedRegisterFile.put(rob.destinationRegsiter, rob.value);
 			r_rat.put(rob.destinationRegsiter, rob.physicalRegister);
+			ROB.remove();
 		}
 
 	}
@@ -900,8 +922,8 @@ public class ApexSimulatorExtended {
 	public static void updateROB(int result, Instructions ins, boolean isBranchTaken){
 		ROB rob_array[] = null;
 		rob_array = ROB.getQ();
-		int headIndex = rob_array.length;
-		for(int i=0;i<headIndex;i++){
+		int headIndex = ROB.getHeadIndex();
+		for(int i=headIndex;i<rob_array.length;i++){
 			if(rob_array[i].pc==ins.pc_value){
 				rob_array[i].value=ins.result;
 				rob_array[i].isValid=true;
@@ -942,7 +964,7 @@ public class ApexSimulatorExtended {
 			Instructions ins=pipeline.get(execute2);
 			unifiedRegisterFile.put(ins.physicalDestRegister, ins.result);
 			allocationList.add(ins.physicalDestRegister);
-			renameTable.get(ins.physicalDestRegister).valid=true;
+			renameTable.get(ins.destRegister).valid=true;
 			pipeline.put(writeALU, ins);
 			pipeline.put(execute2, null);
 		}	
@@ -955,7 +977,7 @@ public class ApexSimulatorExtended {
 			{
 				unifiedRegisterFile.put(ins.destRegister, ins.result);
 				allocationList.add(ins.physicalDestRegister);
-				renameTable.get(ins.physicalDestRegister).valid=true;
+				renameTable.get(ins.destRegister).valid=true;
 			}
 			pipeline.put(writeLSFU, ins);
 			pipeline.put(LSFU2, null);
