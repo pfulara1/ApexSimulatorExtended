@@ -946,9 +946,7 @@ public class ApexSimulatorExtended {
 
 
 						}
-					} else {
-						isStall = true;
-					}
+					} 
 				}
 			}
 		}
