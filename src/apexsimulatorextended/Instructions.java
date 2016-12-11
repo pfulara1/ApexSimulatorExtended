@@ -1,14 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package apexsimulatorextended;
 
-/**
- *
- * @author Paritosh Fulara
- */
 public class Instructions {
     
 
@@ -62,6 +53,13 @@ public class Instructions {
         }
 
     }
+    
+    @Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "instr:"+opcode+"\tsrc1:"+src1Register+"\tsrc2:"+src2Register+"\tdest:"+destRegister
+				+"\tliteral:"+literal;
+	}
 }
 
 

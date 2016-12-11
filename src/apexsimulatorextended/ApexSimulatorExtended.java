@@ -45,7 +45,7 @@ public class ApexSimulatorExtended {
 	public static HashMap<Integer, String> InstructionMap = new HashMap<Integer, String>();
 	public static LinkedHashMap<String, Integer> unifiedRegisterFile = new LinkedHashMap<String, Integer>();
 	public static LinkedHashMap<String, RenameTable> renameTable = new LinkedHashMap<String, RenameTable>();
-	public static LinkedHashMap<String, String> r_rat = new LinkedHashMap<String, String>();
+	public static LinkedHashMap<String, RenameTable> r_rat = new LinkedHashMap<String, RenameTable>();
 	public static int memory[] = new int[4000];
 	public static Scanner sc = new Scanner(System.in);
 	public static int sizeUrf = 32;
@@ -191,8 +191,6 @@ public class ApexSimulatorExtended {
 
 	public static void FetchStage() {
 		if (BranchTaken == true) {
-			BranchTaken = false;
-
 			pipeline.put(fetch, null);
 
 		} else if (isStall == false && HALTFLAG == false) {
@@ -959,11 +957,29 @@ public class ApexSimulatorExtended {
 		rob_array = ROB.getQ();
 		ROB rob = new ROB();
 		rob = rob_array[ROB.getHeadIndex()];
+		RenameTable rt = new RenameTable();
 		if(rob != null && rob.isValid && !rob.isBranchTaken)
 		{
 			unifiedRegisterFile.put(rob.destinationRegsiter, rob.value);
-			r_rat.put(rob.destinationRegsiter, rob.physicalRegister);
+			rt.physicalRegister = rob.physicalRegister;
+			rt.valid = true;
+			r_rat.put(rob.destinationRegsiter, rt);
 			ROB.remove();
+		}
+		else if(rob != null && rob.isValid && rob.isBranchTaken)
+		{
+			BranchTaken = false;
+			renameTable = r_rat;
+			//remove the branch instruction from ROB
+			ROB.remove();
+			
+			//rolling back ROB for the entries that follow BR if branch is taken 
+			int robHead = ROB.getHeadIndex();
+			for (int i=robHead; i<ROB.size(); i++)
+			{
+				ROB.remove();
+			}
+			
 		}
 
 	}

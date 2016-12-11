@@ -1,14 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package apexsimulatorextended;
 
-/**
- *
- * @author Paritosh Fulara
- */
 public class IQ {
     
    int valuesrc1;
@@ -21,4 +12,10 @@ public class IQ {
    String destination;
    Instructions ins;  
    int literal;
+   
+   @Override
+   public String toString() {
+   	return "InstrType:"+ins.opcode+"\tsrc1value:"+valuesrc1+"\tsrc1valid"+src1Valid+
+   			"\tsrc2value:"+valuesrc2+"\tsrc2valid:"+src2Valid+"\tDest:"+destination+"\tFUtype:"+fuType;
+   }
 }
