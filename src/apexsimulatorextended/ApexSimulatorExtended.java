@@ -16,6 +16,8 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.util.Queue;
 
+import org.w3c.dom.ProcessingInstruction;
+
 public class ApexSimulatorExtended {
 
 	/**
@@ -64,6 +66,8 @@ public class ApexSimulatorExtended {
 	public static boolean branchStall = false;
 	public static IQ putInQ = new IQ();
 	public static boolean loadStoreRobHead = false;
+	public static String  insbranch;
+//	public static int resultForBranch=null;;
 
 	/*
 	 * This function take the file path as a argument read the file line by line
@@ -168,6 +172,11 @@ public class ApexSimulatorExtended {
 			if (HALTFLAG == true) {
 				break;
 			}
+			printMapTables();
+			printIQ();
+			printROB();
+			printURF();
+			printStats();
 			Commit();
 			WriteBackALU();
 			WriteBackLSFU();
@@ -187,13 +196,13 @@ public class ApexSimulatorExtended {
 	}
 
 	public static void Issue() {
-		if (pipeline.get(decode2) != null && BranchTaken==false) {
+		if (pipeline.get(decode2) != null && BranchTaken==false && isStall==false) {
 			issueQueue.add(putInQ);
 			pipeline.put(issueQ, pipeline.get(decode2));
 			pipeline.put(decode2, null);
 			putInQ = null;
 		}
-		else
+		if(BranchTaken==true)
 			pipeline.put(issueQ, null);
 
 	}
@@ -286,6 +295,7 @@ public class ApexSimulatorExtended {
 	public static void FetchStage() {
 		if (BranchTaken == true) {
 			pipeline.put(fetch, null);
+			BranchTaken=false;
 
 		} else if (isStall == false && HALTFLAG == false) {
 
@@ -314,7 +324,8 @@ public class ApexSimulatorExtended {
 				pipeline.put(fetch, null);
 
 			}
-		} else if (BranchTaken == true) {
+		}
+		if(BranchTaken==true){
 			pipeline.put(decode1, null);
 		}
 	}
@@ -322,6 +333,9 @@ public class ApexSimulatorExtended {
 	public static void Decode2() {
 
 		if (pipeline.get(decode1) != null) {
+			if(BranchTaken==true){
+				pipeline.put(decode2, null);
+			}
 
 			RenameTable rt = new RenameTable();
 			if (BranchTaken == false && HALTFLAG == false) {
@@ -751,7 +765,7 @@ public class ApexSimulatorExtended {
 						break;
 					case "BZ":
 						if (issueQueue.size() != 12) {
-
+							branchStall=true;
 							// issue queue processing
 							issue.src1Valid = true;
 							issue.src2Valid = true;
@@ -759,6 +773,8 @@ public class ApexSimulatorExtended {
 							issue.ins = ins;
 							rob.isValid=true;
 							rob.pc = ins.pc_value;
+							
+							insbranch =(ins.ProcessInstruction(InstructionMap.get(ins.pc_value-4), ins.pc_value-4)).instructionString  ;
 							ROB.add(rob);
 							putInQ = issue;
 
@@ -768,7 +784,7 @@ public class ApexSimulatorExtended {
 						break;
 					case "BNZ":
 						if (issueQueue.size() != 12) {
-
+							branchStall=true;
 							// issue queue processing
 							issue.fuType = 4;
 							issue.src1Valid = true;
@@ -776,6 +792,7 @@ public class ApexSimulatorExtended {
 							issue.ins = ins;
 							rob.isValid=true;
 							rob.pc = ins.pc_value;
+							insbranch =(ins.ProcessInstruction(InstructionMap.get(ins.pc_value-4), ins.pc_value-4)).instructionString  ;
 							ROB.add(rob);
 							putInQ = issue;
 
@@ -785,7 +802,7 @@ public class ApexSimulatorExtended {
 						break;
 					case "JUMP":
 						if (issueQueue.size() != 12) {
-
+							branchStall=true;
 							// issue queue processing
 							issue.src1Valid = true;
 							issue.src2Valid = true;
@@ -841,8 +858,6 @@ public class ApexSimulatorExtended {
 					pipeline.put(decode1, null);
 				}
 
-			} else if (BranchTaken == true) {
-				pipeline.put(decode2, null);
 			}
 
 		}
@@ -886,7 +901,10 @@ public class ApexSimulatorExtended {
 	public static void ExecuteAlu2() {
 		if (pipeline.get(execute1) != null) {
 			Instructions ins = pipeline.get(execute1);
-
+			if(insbranch!=null){
+				if(ins.instructionString.equals(insbranch))
+				branchStall=false;
+			}
 			String opcode = ins.opcode;
 			int result;
 			switch (opcode) {
@@ -897,7 +915,7 @@ public class ApexSimulatorExtended {
 				} else {
 					ZeroFlag = 0;
 				}
-
+				
 				ins.result = result;
 				updateIQ(result, ins);
 				updateROB(result, ins, false);
@@ -910,6 +928,7 @@ public class ApexSimulatorExtended {
 					ZeroFlag = 0;
 				}
 
+				
 				ins.result = result;
 				updateIQ(result, ins);
 				updateROB(result, ins, false);
@@ -1042,7 +1061,8 @@ public class ApexSimulatorExtended {
 	public static void Branch() {
 		if (!issueQueue.isEmpty()) {
 
-			if (BranchTaken == false) {
+			if (branchStall == false) {
+				isStall=false;
 				IQ iq;
 				index = issueQueue.size();
 				for (int i = 0; i <= index; i++) {
@@ -1101,6 +1121,9 @@ public class ApexSimulatorExtended {
 						index--;
 
 				}
+			}
+			else{
+				isStall=true;
 			}
 		}
 	}
@@ -1230,7 +1253,8 @@ public class ApexSimulatorExtended {
 	}
 
 	public static void WriteBackALU() {
-		if (pipeline.get(execute2) != null) {
+		if (pipeline.get(execute2) != null ) {
+
 			Instructions ins = pipeline.get(execute2);
 			unifiedRegisterFile.put(ins.physicalDestRegister, ins.result);
 			renameTable.get(ins.destRegister).valid = true;
