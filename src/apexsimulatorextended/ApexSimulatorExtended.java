@@ -318,10 +318,6 @@ public class ApexSimulatorExtended {
 
 			if (pipeline.get(fetch) != null) {
 				pipeline.put(decode1, pipeline.get(fetch));
-
-				if (pipeline.get(fetch).opcode.equals("MOVC")) {
-					String s = "Hello";
-				}
 				pipeline.put(fetch, null);
 
 			}
@@ -379,7 +375,7 @@ public class ApexSimulatorExtended {
 								rt.physicalRegister = allocationList.poll().toString();
 
 								allocationList.add(renameTable.get(ins.destRegister).physicalRegister);
-								String[] stringArray = Arrays.copyOf(allocationList.toArray(),
+								/*String[] stringArray = Arrays.copyOf(allocationList.toArray(),
 										allocationList.toArray().length, String[].class);
 								allocationList.clear();
 								int[] array = new int[stringArray.length];
@@ -392,8 +388,7 @@ public class ApexSimulatorExtended {
 
 								for (int i : array) {
 									allocationList.add("P" + i);
-								}
-
+								}*/
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
@@ -445,7 +440,7 @@ public class ApexSimulatorExtended {
 								rt.physicalRegister = allocationList.poll().toString();
 
 								allocationList.add(renameTable.get(ins.destRegister).physicalRegister);
-								String[] stringArray = Arrays.copyOf(allocationList.toArray(),
+								/*String[] stringArray = Arrays.copyOf(allocationList.toArray(),
 										allocationList.toArray().length, String[].class);
 								allocationList.clear();
 								int[] array = new int[stringArray.length];
@@ -458,7 +453,7 @@ public class ApexSimulatorExtended {
 
 								for (int i : array) {
 									allocationList.add("P" + i);
-								}
+								}*/
 
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
@@ -510,7 +505,7 @@ public class ApexSimulatorExtended {
 								rt.physicalRegister = allocationList.poll().toString();
 
 								allocationList.add(renameTable.get(ins.destRegister).physicalRegister);
-								String[] stringArray = Arrays.copyOf(allocationList.toArray(),
+								/*String[] stringArray = Arrays.copyOf(allocationList.toArray(),
 										allocationList.toArray().length, String[].class);
 								allocationList.clear();
 								int[] array = new int[stringArray.length];
@@ -524,7 +519,7 @@ public class ApexSimulatorExtended {
 								for (int i : array) {
 									allocationList.add("P" + i);
 								}
-
+*/
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
@@ -575,7 +570,7 @@ public class ApexSimulatorExtended {
 								rt.physicalRegister = allocationList.poll().toString();
 
 								allocationList.add(renameTable.get(ins.destRegister).physicalRegister);
-								String[] stringArray = Arrays.copyOf(allocationList.toArray(),
+								/*String[] stringArray = Arrays.copyOf(allocationList.toArray(),
 										allocationList.toArray().length, String[].class);
 								allocationList.clear();
 								int[] array = new int[stringArray.length];
@@ -588,7 +583,7 @@ public class ApexSimulatorExtended {
 
 								for (int i : array) {
 									allocationList.add("P" + i);
-								}
+								}*/
 
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
@@ -640,7 +635,7 @@ public class ApexSimulatorExtended {
 								rt.physicalRegister = allocationList.poll().toString();
 
 								allocationList.add(renameTable.get(ins.destRegister).physicalRegister);
-								String[] stringArray = Arrays.copyOf(allocationList.toArray(),
+								/*String[] stringArray = Arrays.copyOf(allocationList.toArray(),
 										allocationList.toArray().length, String[].class);
 								allocationList.clear();
 								int[] array = new int[stringArray.length];
@@ -653,7 +648,7 @@ public class ApexSimulatorExtended {
 
 								for (int i : array) {
 									allocationList.add("P" + i);
-								}
+								}*/
 
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
@@ -706,7 +701,7 @@ public class ApexSimulatorExtended {
 								rt.physicalRegister = allocationList.poll().toString();
 
 								allocationList.add(renameTable.get(ins.destRegister).physicalRegister);
-								String[] stringArray = Arrays.copyOf(allocationList.toArray(),
+								/*String[] stringArray = Arrays.copyOf(allocationList.toArray(),
 										allocationList.toArray().length, String[].class);
 								allocationList.clear();
 								int[] array = new int[stringArray.length];
@@ -719,7 +714,7 @@ public class ApexSimulatorExtended {
 
 								for (int i : array) {
 									allocationList.add("P" + i);
-								}
+								}*/
 
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
@@ -756,7 +751,7 @@ public class ApexSimulatorExtended {
 								rt.physicalRegister = allocationList.poll().toString();
 
 								allocationList.add(renameTable.get(ins.destRegister).physicalRegister);
-								String[] stringArray = Arrays.copyOf(allocationList.toArray(),
+								/*String[] stringArray = Arrays.copyOf(allocationList.toArray(),
 										allocationList.toArray().length, String[].class);
 								allocationList.clear();
 								int[] array = new int[stringArray.length];
@@ -769,7 +764,7 @@ public class ApexSimulatorExtended {
 
 								for (int i : array) {
 									allocationList.add("P" + i);
-								}
+								}*/
 
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
@@ -817,7 +812,7 @@ public class ApexSimulatorExtended {
 								rt.physicalRegister = allocationList.poll().toString();
 
 								allocationList.add(renameTable.get(ins.destRegister).physicalRegister);
-								String[] stringArray = Arrays.copyOf(allocationList.toArray(),
+								/*String[] stringArray = Arrays.copyOf(allocationList.toArray(),
 										allocationList.toArray().length, String[].class);
 								allocationList.clear();
 								int[] array = new int[stringArray.length];
@@ -830,7 +825,7 @@ public class ApexSimulatorExtended {
 
 								for (int i : array) {
 									allocationList.add("P" + i);
-								}
+								}*/
 
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
@@ -955,7 +950,7 @@ public class ApexSimulatorExtended {
 						break;
 					case "JUMP":
 						if (issueQueue.size() != 12) {
-							branchStall = true;
+							//branchStall = true;
 							// issue queue processing
 							issue.src1Valid = true;
 							issue.src2Valid = true;
@@ -967,7 +962,7 @@ public class ApexSimulatorExtended {
 							rob.isValid = true;
 							ROB.add(rob);
 
-							String ins2 = InstructionMap.get(ins.pc_value - 4);
+							/*String ins2 = InstructionMap.get(ins.pc_value - 4);
 							for (int n = 8; n < 8000; n = n + 4) {
 								if (ins2.startsWith("STORE"))
 									ins2 = InstructionMap.get(ins.pc_value - n);
@@ -975,7 +970,7 @@ public class ApexSimulatorExtended {
 									break;
 							}
 							ins2 = ins2.replace(",", " ");
-							insbranch = ins2;
+							insbranch = ins2;*/
 
 							putInQ = issue;
 						} else {
@@ -1267,17 +1262,21 @@ public class ApexSimulatorExtended {
 			switch (opcode) {
 			case "LOAD":
 				memoryResult = memory[resultLSFU1];
+				
 				ins.result = memoryResult;
 				updateIQ(memoryResult, ins);
 
 				source1LSFU = 0;
 				source2LSFU = 0;
+				resultLSFU1 = 0;
 				updateROB(memoryResult, ins, false);
 				break;
 			case "STORE":
 				ins.result = source1LSFU;
+				
 				memory[resultLSFU1] = ins.result;
 
+				resultLSFU1 = 0;
 				source1LSFU = 0;
 				source2LSFU = 0;
 				ROB.remove();
@@ -1292,7 +1291,6 @@ public class ApexSimulatorExtended {
 		if (!issueQueue.isEmpty() && counter == 4) {
 			IQ iq;
 			index = issueQueue.size();
-			System.out.println(index);
 			for (int i = 0; i <= index; i++) {
 				iq = issueQueue.get(index - 1);
 				if (iq != null && iq.fuType == 2 && iq.src1Valid == true && iq.src2Valid == true) {
