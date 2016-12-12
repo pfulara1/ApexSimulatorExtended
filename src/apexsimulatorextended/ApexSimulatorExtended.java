@@ -61,13 +61,14 @@ public class ApexSimulatorExtended {
 	public static int resultLSFU1;
 	public static int literal_zero = 0000;
 	public static int source1ALU, source2ALU, source1MUL, source2MUL,
-	source1Branch, source2Branch, source1LSFU, source2LSFU;
+			source1Branch, source2Branch, source1LSFU, source2LSFU;
 	public static int counter = 0;
 	public static boolean branchStall = false;
 	public static IQ putInQ = new IQ();
 	public static boolean loadStoreRobHead = false;
-	public static String  insbranch;
-//	public static int resultForBranch=null;;
+	public static String insbranch;
+
+	// public static int resultForBranch=null;;
 
 	/*
 	 * This function take the file path as a argument read the file line by line
@@ -127,7 +128,7 @@ public class ApexSimulatorExtended {
 				break;
 
 			case 3:
-				//Sets the custom URF size
+				// Sets the custom URF size
 				changeUrfSize();
 				break;
 
@@ -165,7 +166,8 @@ public class ApexSimulatorExtended {
 
 	public static void Simulate() {
 
-		System.out.println("Please enter the total number of cycles you want to simulate:");
+		System.out
+				.println("Please enter the total number of cycles you want to simulate:");
 		Scanner sc = new Scanner(System.in);
 		int cycles = sc.nextInt();
 		for (int i = 1; i <= cycles; i++) {
@@ -196,30 +198,30 @@ public class ApexSimulatorExtended {
 	}
 
 	public static void Issue() {
-		if (BranchTaken==false && isStall==false) {
-			if(pipeline.get(decode2) != null){
-			issueQueue.add(putInQ);
-			pipeline.put(issueQ, pipeline.get(decode2));
-			pipeline.put(decode2, null);
-			putInQ = null;
+		if (BranchTaken == false && isStall == false) {
+			if (pipeline.get(decode2) != null) {
+				issueQueue.add(putInQ);
+				pipeline.put(issueQ, pipeline.get(decode2));
+				pipeline.put(decode2, null);
+				putInQ = null;
+			}
 		}
-		}
-		if(BranchTaken==true)
+		if (BranchTaken == true)
 			pipeline.put(issueQ, null);
 
 	}
 
-	public static void printMapTables()
-	{
-		//Prints rename table
-		Iterator<Entry<String, RenameTable>> it2 = renameTable.entrySet().iterator();
+	public static void printMapTables() {
+		// Prints rename table
+		Iterator<Entry<String, RenameTable>> it2 = renameTable.entrySet()
+				.iterator();
 		System.out.println("\nRename Table:");
 		while (it2.hasNext()) {
 			System.out.println(it2.next());
 		}
 		System.out.println();
 
-		//Prints R-RAT
+		// Prints R-RAT
 		System.out.println("\nR-RAT:");
 		Iterator<Entry<String, RenameTable>> it3 = r_rat.entrySet().iterator();
 		while (it3.hasNext()) {
@@ -228,20 +230,18 @@ public class ApexSimulatorExtended {
 		System.out.println();
 	}
 
-	public static void printIQ()
-	{
-		//Print issue queue
+	public static void printIQ() {
+		// Print issue queue
 		System.out.println("\nIssue Queue:");
 		for (int i = 0; i < issueQueue.size(); i++) {
-			if(issueQueue.get(i)!=null)
+			if (issueQueue.get(i) != null)
 				System.out.println(issueQueue.get(i).toString());
 		}
 		System.out.println();
 	}
 
-	public static void printROB()
-	{
-		//Print ROB
+	public static void printROB() {
+		// Print ROB
 		ROB[] rob_array = ROB.getQ();
 		System.out.println("ROB:");
 		for (int i = 0; i < rob_array.length; i++) {
@@ -251,11 +251,10 @@ public class ApexSimulatorExtended {
 		System.out.println();
 	}
 
-	public static void printURF()
-	{
+	public static void printURF() {
 		int i = 0;
 
-		//Print URF
+		// Print URF
 		Iterator<Entry<String, Integer>> it1 = unifiedRegisterFile.entrySet()
 				.iterator();
 		System.out.println("URF:");
@@ -268,24 +267,24 @@ public class ApexSimulatorExtended {
 		System.out.println();
 	}
 
-	public static void printMemory()
-	{
+	public static void printMemory() {
 		Scanner sc = new Scanner(System.in);
-		System.out.println("Enter the starting value of memory location to display");
+		System.out
+				.println("Enter the starting value of memory location to display");
 		int i = sc.nextInt();
-		System.out.println("Enter the ending value of memory location to display");
+		System.out
+				.println("Enter the ending value of memory location to display");
 		int j = sc.nextInt();
 
-		for(int x = i; x<=j; x++)
-		{
-			System.out.println("Memory Value At "+ x + " : " + memory[x]);
+		for (int x = i; x <= j; x++) {
+			System.out.println("Memory Value At " + x + " : " + memory[x]);
 		}
 		System.out.println();
 	}
 
 	public static void printStats() {
 
-		//Print pipeline
+		// Print pipeline
 		System.out.println("\nPipeline:");
 		Iterator<Entry<String, Instructions>> it4 = pipeline.entrySet()
 				.iterator();
@@ -298,7 +297,7 @@ public class ApexSimulatorExtended {
 	public static void FetchStage() {
 		if (BranchTaken == true) {
 			pipeline.put(fetch, null);
-			BranchTaken=false;
+			BranchTaken = false;
 
 		} else if (isStall == false && HALTFLAG == false) {
 
@@ -328,7 +327,7 @@ public class ApexSimulatorExtended {
 
 			}
 		}
-		if(BranchTaken==true){
+		if (BranchTaken == true) {
 			pipeline.put(decode1, null);
 		}
 	}
@@ -336,7 +335,7 @@ public class ApexSimulatorExtended {
 	public static void Decode2() {
 
 		if (pipeline.get(decode1) != null) {
-			if(BranchTaken==true){
+			if (BranchTaken == true) {
 				pipeline.put(decode2, null);
 			}
 
@@ -370,22 +369,19 @@ public class ApexSimulatorExtended {
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
 
-							if(renameTable.get(ins.destRegister).physicalRegister==null){
+							if (renameTable.get(ins.destRegister).physicalRegister == null) {
 								rt.physicalRegister = allocationList.poll()
 										.toString();
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
-							}
-							else
-							{
+							} else {
 								rt.physicalRegister = allocationList.poll()
 										.toString();
-								allocationList.add(renameTable.get(ins.destRegister).physicalRegister);
+								allocationList
+										.add(renameTable.get(ins.destRegister).physicalRegister);
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
-
-
 
 							// issue queue processing
 							issue.fuType = 1;
@@ -425,21 +421,19 @@ public class ApexSimulatorExtended {
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
 
-							if(renameTable.get(ins.destRegister).physicalRegister==null){
+							if (renameTable.get(ins.destRegister).physicalRegister == null) {
 								rt.physicalRegister = allocationList.poll()
 										.toString();
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
-							}
-							else
-							{
+							} else {
 								rt.physicalRegister = allocationList.poll()
 										.toString();
-								allocationList.add(renameTable.get(ins.destRegister).physicalRegister);
+								allocationList
+										.add(renameTable.get(ins.destRegister).physicalRegister);
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
-
 
 							// issue queue processing
 							issue.fuType = 1;
@@ -479,21 +473,19 @@ public class ApexSimulatorExtended {
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
 
-							if(renameTable.get(ins.destRegister).physicalRegister==null){
+							if (renameTable.get(ins.destRegister).physicalRegister == null) {
 								rt.physicalRegister = allocationList.poll()
 										.toString();
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
-							}
-							else
-							{
+							} else {
 								rt.physicalRegister = allocationList.poll()
 										.toString();
-								allocationList.add(renameTable.get(ins.destRegister).physicalRegister);
+								allocationList
+										.add(renameTable.get(ins.destRegister).physicalRegister);
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
-
 
 							// issue queue processing
 							issue.fuType = 1;
@@ -533,18 +525,16 @@ public class ApexSimulatorExtended {
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
 
-
-							if(renameTable.get(ins.destRegister).physicalRegister==null){
+							if (renameTable.get(ins.destRegister).physicalRegister == null) {
 								rt.physicalRegister = allocationList.poll()
 										.toString();
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
-							}
-							else
-							{
+							} else {
 								rt.physicalRegister = allocationList.poll()
 										.toString();
-								allocationList.add(renameTable.get(ins.destRegister).physicalRegister);
+								allocationList
+										.add(renameTable.get(ins.destRegister).physicalRegister);
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
@@ -587,17 +577,16 @@ public class ApexSimulatorExtended {
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
 
-							if(renameTable.get(ins.destRegister).physicalRegister==null){
+							if (renameTable.get(ins.destRegister).physicalRegister == null) {
 								rt.physicalRegister = allocationList.poll()
 										.toString();
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
-							}
-							else
-							{
+							} else {
 								rt.physicalRegister = allocationList.poll()
 										.toString();
-								allocationList.add(renameTable.get(ins.destRegister).physicalRegister);
+								allocationList
+										.add(renameTable.get(ins.destRegister).physicalRegister);
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
@@ -640,7 +629,7 @@ public class ApexSimulatorExtended {
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
 
-							//Register renaming
+							// Register renaming
 							rt.physicalRegister = allocationList.poll()
 									.toString();
 							rt.valid = false;
@@ -705,8 +694,7 @@ public class ApexSimulatorExtended {
 
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 
-
-							//Register renaming
+							// Register renaming
 							rt.physicalRegister = allocationList.poll()
 									.toString();
 							rt.valid = false;
@@ -757,7 +745,7 @@ public class ApexSimulatorExtended {
 							issue.ins = ins;
 							issue.literal = ins.literal;
 							rob.memoryAddressForStore = 0;
-							rob.isValid=true;
+							rob.isValid = true;
 							rob.pc = ins.pc_value;
 							ROB.add(rob);
 							putInQ = issue;
@@ -768,20 +756,20 @@ public class ApexSimulatorExtended {
 						break;
 					case "BZ":
 						if (issueQueue.size() != 12) {
-							branchStall=true;
+							branchStall = true;
 							// issue queue processing
 							issue.src1Valid = true;
 							issue.src2Valid = true;
 							issue.fuType = 4;
 							issue.ins = ins;
-							rob.isValid=true;
+							rob.isValid = true;
 							rob.pc = ins.pc_value;
-							
-							String ins2 = InstructionMap.get(ins.pc_value-4);
+
+							String ins2 = InstructionMap.get(ins.pc_value - 4);
 							ins2 = ins2.replace(",", " ");
-							insbranch =ins2;
+							insbranch = ins2;
 							ins2 = ins2.replace(",", " ");
-							insbranch =ins2;
+							insbranch = ins2;
 							ROB.add(rob);
 							putInQ = issue;
 
@@ -791,18 +779,18 @@ public class ApexSimulatorExtended {
 						break;
 					case "BNZ":
 						if (issueQueue.size() != 12) {
-							branchStall=true;
+							branchStall = true;
 							// issue queue processing
 							issue.fuType = 4;
 							issue.src1Valid = true;
 							issue.src2Valid = true;
 							issue.ins = ins;
-							rob.isValid=true;
+							rob.isValid = true;
 							rob.pc = ins.pc_value;
-							String ins2 = InstructionMap.get(ins.pc_value-4);
+							String ins2 = InstructionMap.get(ins.pc_value - 4);
 							ins2 = ins2.replace(",", " ");
-							insbranch =ins2;
-							insbranch =ins2;
+							insbranch = ins2;
+							insbranch = ins2;
 							ROB.add(rob);
 							putInQ = issue;
 
@@ -812,14 +800,14 @@ public class ApexSimulatorExtended {
 						break;
 					case "JUMP":
 						if (issueQueue.size() != 12) {
-							branchStall=true;
+							branchStall = true;
 							// issue queue processing
 							issue.src1Valid = true;
 							issue.src2Valid = true;
 							issue.fuType = 4;
 							issue.ins = ins;
 							rob.pc = ins.pc_value;
-							rob.isValid=true;
+							rob.isValid = true;
 							ROB.add(rob);
 							putInQ = issue;
 						} else {
@@ -839,7 +827,7 @@ public class ApexSimulatorExtended {
 							issue.fuType = 4;
 							issue.src2Valid = true;
 							issue.ins = ins;
-							rob.isValid=true;
+							rob.isValid = true;
 							rob.pc = ins.pc_value;
 							ROB.add(rob);
 							putInQ = issue;
@@ -849,14 +837,14 @@ public class ApexSimulatorExtended {
 						break;
 					case "HALT":
 						if (issueQueue.size() != 12) {
-							
+
 							// issue queue processing
 							issue.src1Valid = true;
 							issue.src2Valid = true;
 							issue.fuType = 4;
 							issue.ins = ins;
 							rob.pc = ins.pc_value;
-							rob.isValid=true;
+							rob.isValid = true;
 							ROB.add(rob);
 							putInQ = issue;
 						} else {
@@ -880,7 +868,8 @@ public class ApexSimulatorExtended {
 			index = issueQueue.size();
 			for (int i = 0; i <= index; i++) {
 				iq = issueQueue.get(index - 1);
-				if (iq!=null && iq.fuType == 1 && !iq.ins.opcode.equals("MOVC")
+				if (iq != null && iq.fuType == 1
+						&& !iq.ins.opcode.equals("MOVC")
 						&& iq.src1Valid == true && iq.src2Valid == true) {
 					switch (iq.ins.opcode) {
 					case "ADD":
@@ -896,13 +885,14 @@ public class ApexSimulatorExtended {
 						break;
 					}
 					break;
-				} else if (iq!=null && iq.fuType == 1 && iq.ins.opcode.equals("MOVC")) {
+				} else if (iq != null && iq.fuType == 1
+						&& iq.ins.opcode.equals("MOVC")) {
 					source1ALU = iq.literal;
 					pipeline.put(execute1, iq.ins);
 					issueQueue.remove(index - 1);
+					pipeline.put(issueQ, null);
 					break;
-				}
-				else
+				} else
 					index--;
 
 			}
@@ -912,9 +902,9 @@ public class ApexSimulatorExtended {
 	public static void ExecuteAlu2() {
 		if (pipeline.get(execute1) != null) {
 			Instructions ins = pipeline.get(execute1);
-			if(insbranch!=null){
-				if(ins.instructionString.equals(insbranch))
-				branchStall=false;
+			if (insbranch != null) {
+				if (ins.instructionString.equals(insbranch))
+					branchStall = false;
 			}
 			String opcode = ins.opcode;
 			int result;
@@ -926,10 +916,12 @@ public class ApexSimulatorExtended {
 				} else {
 					ZeroFlag = 0;
 				}
-				
+
 				ins.result = result;
 				updateIQ(result, ins);
 				updateROB(result, ins, false);
+				source1ALU = 0;
+				source2ALU = 0;
 				break;
 			case "SUB":
 				result = source1ALU - source2ALU;
@@ -938,8 +930,8 @@ public class ApexSimulatorExtended {
 				} else {
 					ZeroFlag = 0;
 				}
-
-				
+				source1ALU = 0;
+				source2ALU = 0;
 				ins.result = result;
 				updateIQ(result, ins);
 				updateROB(result, ins, false);
@@ -947,24 +939,32 @@ public class ApexSimulatorExtended {
 			case "AND":
 				result = source1ALU & source2ALU;
 				ins.result = result;
+				source1ALU = 0;
+				source2ALU = 0;
 				updateIQ(result, ins);
 				updateROB(result, ins, false);
 				break;
 			case "OR":
 				result = source1ALU | source2ALU;
 				ins.result = result;
+				source1ALU = 0;
+				source2ALU = 0;
 				updateIQ(result, ins);
 				updateROB(result, ins, false);
 				break;
 			case "EX-OR":
 				result = source1ALU ^ source2ALU;
 				ins.result = result;
+				source1ALU = 0;
+				source2ALU = 0;
 				updateIQ(result, ins);
 				updateROB(result, ins, false);
 				break;
 			case "MOVC":
 				result = literal_zero + source1ALU;
 				ins.result = result;
+				source1ALU = 0;
+				source2ALU = 0;
 				updateIQ(result, ins);
 				updateROB(result, ins, false);
 				break;
@@ -982,27 +982,32 @@ public class ApexSimulatorExtended {
 			index = issueQueue.size();
 			for (int i = 0; i <= index; i++) {
 				iq = issueQueue.get(index - 1);
-				if (iq!=null && iq.fuType == 3 && iq.src1Valid == true
+				if (iq != null && iq.fuType == 3 && iq.src1Valid == true
 						&& iq.src2Valid == true) {
 					switch (iq.ins.opcode) {
 					case "LOAD":
 						source1LSFU = iq.valuesrc1;
 						source2LSFU = iq.literal;
 						resultLSFU1 = source1LSFU + source2LSFU;
+						source1LSFU= 0;
+						source2LSFU= 0;
 						pipeline.put(LSFU1, iq.ins);
+						pipeline.put(issueQ, null);
 						issueQueue.remove(index - 1);
 						break;
 					case "STORE":
 						source1LSFU = iq.valuesrc1;
 						source2LSFU = iq.valuesrc2;
 						resultLSFU1 = source2LSFU + iq.literal;
+						source1LSFU= 0;
+						source2LSFU= 0;
 						pipeline.put(LSFU1, iq.ins);
+						pipeline.put(issueQ, null);
 						issueQueue.remove(index - 1);
 						break;
 					}
 					break;
-				}
-				else
+				} else
 					index--;
 
 			}
@@ -1042,7 +1047,7 @@ public class ApexSimulatorExtended {
 			index = issueQueue.size();
 			for (int i = 0; i <= index; i++) {
 				iq = issueQueue.get(index - 1);
-				if (iq!=null && iq.fuType == 2 && iq.src1Valid == true
+				if (iq != null && iq.fuType == 2 && iq.src1Valid == true
 						&& iq.src2Valid == true) {
 					issueQueue.remove(index - 1);
 					counter--;
@@ -1061,9 +1066,9 @@ public class ApexSimulatorExtended {
 						updateROB(iq.ins.result, iq.ins, false);
 
 					}
+					pipeline.put(issueQ, null);
 					pipeline.put(multiply, iq.ins);
-				}
-				else
+				} else
 					index--;
 			}
 		}
@@ -1073,12 +1078,13 @@ public class ApexSimulatorExtended {
 		if (!issueQueue.isEmpty()) {
 
 			if (branchStall == false) {
-				isStall=false;
+				isStall = false;
 				IQ iq;
 				index = issueQueue.size();
 				for (int i = 0; i <= index; i++) {
 					iq = issueQueue.get(index - 1);
-					if (iq!=null && iq.fuType == 4 && iq.src1Valid == true && iq.src2Valid == true) {
+					if (iq != null && iq.fuType == 4 && iq.src1Valid == true
+							&& iq.src2Valid == true) {
 						issueQueue.remove(index - 1);
 						switch (iq.ins.opcode) {
 						case "BZ":
@@ -1125,16 +1131,15 @@ public class ApexSimulatorExtended {
 							updateROB(0, iq.ins, true);
 							break;
 						}
+						pipeline.put(issueQ, null);
 						pipeline.put(branchALU1, iq.ins);
 						break;
-					}
-					else
+					} else
 						index--;
 
 				}
-			}
-			else{
-				isStall=true;
+			} else {
+				isStall = true;
 			}
 		}
 	}
@@ -1145,23 +1150,20 @@ public class ApexSimulatorExtended {
 		pipeline.put(writeALU, null);
 		pipeline.put(writeBranch, null);
 		pipeline.put(writeMultiply, null);
+		pipeline.put(writeLSFU, null);
 		ROB rob_array[] = null;
 		rob_array = ROB.getQ();
 		ROB rob = new ROB();
 		rob = rob_array[ROB.getHeadIndex()];
 
-		if(rob != null)
-		{
+		if (rob != null) {
 			String ins = InstructionMap.get(rob.pc);
 			Instructions instruction = new Instructions();
 			instruction = instruction.ProcessInstruction(ins, rob.pc);
 
-			if(instruction.opcode.equalsIgnoreCase("STORE"))
-			{
+			if (instruction.opcode.equalsIgnoreCase("STORE")) {
 				loadStoreRobHead = true;
-			}
-			else if(instruction.opcode.equalsIgnoreCase("LOAD"))
-			{
+			} else if (instruction.opcode.equalsIgnoreCase("LOAD")) {
 				loadStoreRobHead = true;
 				RenameTable rt = new RenameTable();
 				if (rob.isValid && !rob.isBranchTaken) {
@@ -1171,44 +1173,52 @@ public class ApexSimulatorExtended {
 					r_rat.put(rob.destinationRegsiter, rt);
 					ROB.remove();
 				}
-			}
-			else if(instruction.opcode.equalsIgnoreCase("HALT"))
-			{
+			} else if (instruction.opcode.equalsIgnoreCase("HALT")) {
 				HALTFLAG = true;
 				ROB.remove();
-			}
-			else
-			{
+			} else {
 				RenameTable rt = new RenameTable();
-				if (rob != null && rob.isValid && !rob.isBranchTaken && !instruction.opcode.equalsIgnoreCase("BNZ") && !instruction.opcode.equalsIgnoreCase("BZ") && !instruction.opcode.equalsIgnoreCase("BAL") && !instruction.opcode.equalsIgnoreCase("JUMP")) {
+				if (rob != null && rob.isValid && !rob.isBranchTaken
+						&& !instruction.opcode.equalsIgnoreCase("BNZ")
+						&& !instruction.opcode.equalsIgnoreCase("BZ")
+						&& !instruction.opcode.equalsIgnoreCase("BAL")
+						&& !instruction.opcode.equalsIgnoreCase("JUMP")) {
 					unifiedRegisterFile.put(rob.destinationRegsiter, rob.value);
 					rt.physicalRegister = rob.physicalRegister;
 					rt.valid = true;
 					r_rat.put(rob.destinationRegsiter, rt);
 					ROB.remove();
-				} else if (rob != null && rob.isValid && !rob.isBranchTaken && (instruction.opcode.equalsIgnoreCase("BNZ") || instruction.opcode.equalsIgnoreCase("BZ") || instruction.opcode.equalsIgnoreCase("BAL") || instruction.opcode.equalsIgnoreCase("JUMP"))) {
+				} else if (rob != null
+						&& rob.isValid
+						&& !rob.isBranchTaken
+						&& (instruction.opcode.equalsIgnoreCase("BNZ")
+								|| instruction.opcode.equalsIgnoreCase("BZ")
+								|| instruction.opcode.equalsIgnoreCase("BAL") || instruction.opcode
+									.equalsIgnoreCase("JUMP"))) {
 					ROB.remove();
 				} else if (rob != null && rob.isValid && rob.isBranchTaken) {
 					BranchTaken = false;
 					renameTable.clear();
-					Iterator<Entry<String, RenameTable>> it = r_rat.entrySet().iterator();
-					while(it.hasNext()){
-						Entry<String, RenameTable> temp =  it.next();
+					Iterator<Entry<String, RenameTable>> it = r_rat.entrySet()
+							.iterator();
+					while (it.hasNext()) {
+						Entry<String, RenameTable> temp = it.next();
 						RenameTable _rt = new RenameTable();
 						_rt = temp.getValue();
 						String tempStr = new String();
 						tempStr = temp.getKey();
 						renameTable.put(tempStr, _rt);
 					}
-					//r_rat.clear();
-					
+					// r_rat.clear();
+
 					// remove the branch instruction from ROB
 					ROB.remove();
 
-					// rolling back ROB for the entries that follow BR if branch is
+					// rolling back ROB for the entries that follow BR if branch
+					// is
 					// taken
 					int robHead = ROB.getHeadIndex();
-					for (int i = robHead; i < ROB.size()+robHead; i++) {
+					for (int i = robHead; i < ROB.size() + robHead; i++) {
 						ROB.remove();
 					}
 				}
@@ -1220,9 +1230,9 @@ public class ApexSimulatorExtended {
 			boolean isBranchTaken) {
 		ROB rob_array[] = null;
 		rob_array = ROB.getQ();
-		//int headIndex = ROB.getHeadIndex();
+		// int headIndex = ROB.getHeadIndex();
 		for (int i = 0; i < rob_array.length; i++) {
-			if (rob_array[i] !=null && rob_array[i].pc == ins.pc_value) {
+			if (rob_array[i] != null && rob_array[i].pc == ins.pc_value) {
 				rob_array[i].value = ins.result;
 				rob_array[i].isValid = true;
 				rob_array[i].isBranchTaken = isBranchTaken;
@@ -1238,24 +1248,26 @@ public class ApexSimulatorExtended {
 	public static void updateIQ(int result, Instructions ins) {
 		for (int i = 0; i < issueQueue.size(); i++) {
 			IQ IQins = issueQueue.get(i);
-			if(IQins != null)
-			{	
-				if ((IQins.ins.opcode.equals("MOVC") || IQins.ins.opcode.equals("LOAD")) && IQins.ins.src1Register.equals(ins.destRegister)) {
+			if (IQins != null) {
+				if ((IQins.ins.opcode.equals("MOVC") || IQins.ins.opcode
+						.equals("LOAD"))
+						&& IQins.ins.src1Register.equals(ins.destRegister)) {
 					IQins.valuesrc1 = result;
 					IQins.src1Valid = true;
 					issueQueue.set(i, IQins);
 					break;
 				}
 
-				else 
-				{
-					if (IQins.ins.src1Register.equalsIgnoreCase(ins.destRegister)) {
+				else {
+					if (IQins.ins.src1Register
+							.equalsIgnoreCase(ins.destRegister)) {
 
 						IQins.valuesrc1 = result;
 						IQins.src1Valid = true;
 						issueQueue.set(i, IQins);
 					}
-					if (IQins.ins.src2Register.equalsIgnoreCase(ins.destRegister)) {
+					if (IQins.ins.src2Register
+							.equalsIgnoreCase(ins.destRegister)) {
 						IQins.valuesrc2 = result;
 						IQins.src2Valid = true;
 						issueQueue.set(i, IQins);
@@ -1267,7 +1279,7 @@ public class ApexSimulatorExtended {
 	}
 
 	public static void WriteBackALU() {
-		if (pipeline.get(execute2) != null ) {
+		if (pipeline.get(execute2) != null) {
 
 			Instructions ins = pipeline.get(execute2);
 			unifiedRegisterFile.put(ins.physicalDestRegister, ins.result);
@@ -1325,7 +1337,7 @@ public class ApexSimulatorExtended {
 				unifiedRegisterFile.put("R" + i, 0);
 			}
 
-			for (int j = 0; j < sizeUrf-17; j++) {
+			for (int j = 0; j < sizeUrf - 17; j++) {
 				unifiedRegisterFile.put("P" + j, 0);
 				allocationList.add("P" + j);
 			}
@@ -1340,7 +1352,7 @@ public class ApexSimulatorExtended {
 			System.out.println("All Initialization Complete\n");
 		} else
 			System.out
-			.println("Initialization cannot be done, URF size should be greater than default size:32");
+					.println("Initialization cannot be done, URF size should be greater than default size:32");
 
 	}
 
