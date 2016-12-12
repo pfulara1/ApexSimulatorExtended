@@ -63,7 +63,7 @@ public class ApexSimulatorExtended {
 	public static int literal_zero = 0000;
 	public static int source1ALU, source2ALU, source1MUL, source2MUL,
 			source1Branch, source2Branch, source1LSFU, source2LSFU;
-	public static int counter = 0;
+	public static int counter = 4;
 	public static boolean branchStall = false;
 	public static IQ putInQ = new IQ();
 	public static boolean loadStoreRobHead = false;
@@ -377,7 +377,7 @@ public class ApexSimulatorExtended {
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
 
-							if (renameTable.get(ins.destRegister).physicalRegister == null) {
+							if (renameTable.get(ins.destRegister)==null || renameTable.get(ins.destRegister).physicalRegister == null) {
 								rt.physicalRegister = allocationList.poll()
 										.toString();
 								rt.valid = false;
@@ -432,7 +432,7 @@ public class ApexSimulatorExtended {
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
 
-							if (renameTable.get(ins.destRegister).physicalRegister == null) {
+							if (renameTable.get(ins.destRegister)==null || renameTable.get(ins.destRegister).physicalRegister == null) {
 								rt.physicalRegister = allocationList.poll()
 										.toString();
 								rt.valid = false;
@@ -503,7 +503,7 @@ public class ApexSimulatorExtended {
 							}
 
 							// issue queue processing
-							issue.fuType = 1;
+							issue.fuType = 2;
 							issue.destination = rt.physicalRegister;
 							ins.physicalDestRegister = rt.physicalRegister;
 							issue.ins = ins;
@@ -1096,36 +1096,41 @@ public class ApexSimulatorExtended {
 	}
 
 	public static void ExecuteMul() {
-		if (!issueQueue.isEmpty()) {
-			IQ iq;
+		IQ iq = null;
+		if (!issueQueue.isEmpty()  && counter==4) {
 			index = issueQueue.size();
+			System.out.println(index);
 			for (int i = 0; i <= index; i++) {
 				iq = issueQueue.get(index - 1);
 				if (iq != null && iq.fuType == 2 && iq.src1Valid == true
 						&& iq.src2Valid == true) {
 					issueQueue.remove(index - 1);
-					counter--;
-					if (counter == 0) {
-						source1MUL = iq.valuesrc1;
-						source2MUL = iq.valuesrc2;
-						iq.ins.result = source1MUL * source2MUL;
-						if (iq.ins.result == 0
-								&& iq.ins.pc_value + 4 == BranchPcValue) {
-							ZeroFlag = 1;
-						} else {
-							ZeroFlag = 0;
-						}
 
-						updateIQ(iq.ins.result, iq.ins);
-						updateROB(iq.ins.result, iq.ins, false);
-
-					}
 					pipeline.put(issueQ, null);
 					pipeline.put(multiply, iq.ins);
+					break;
 				} else
 					index--;
 			}
 		}
+		
+		if (pipeline.get(multiply)!=null && counter!=0)
+			counter--;
+		
+		else 	if (iq!=null && counter == 0) {
+			source1MUL = iq.valuesrc1;
+			source2MUL = iq.valuesrc2;
+			iq.ins.result = source1MUL * source2MUL;
+			if (iq.ins.result == 0
+					&& iq.ins.pc_value + 4 == BranchPcValue) {
+				ZeroFlag = 1;
+			} else {
+				ZeroFlag = 0;
+			}
+			updateIQ(iq.ins.result, iq.ins);
+			updateROB(iq.ins.result, iq.ins, false);
+		}
+
 	}
 
 	public static void Branch() {
@@ -1371,6 +1376,7 @@ public class ApexSimulatorExtended {
 			counter = 4;
 			Instructions ins = pipeline.get(multiply);
 			pipeline.put(writeMultiply, ins);
+			pipeline.put(multiply, null);
 			unifiedRegisterFile.put(ins.physicalDestRegister, ins.result);
 			renameTable.get(ins.destRegister).valid = true;
 		}
