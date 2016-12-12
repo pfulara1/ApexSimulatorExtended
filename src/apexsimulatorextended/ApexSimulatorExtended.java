@@ -196,11 +196,13 @@ public class ApexSimulatorExtended {
 	}
 
 	public static void Issue() {
-		if (pipeline.get(decode2) != null && BranchTaken==false && isStall==false) {
+		if (BranchTaken==false && isStall==false) {
+			if(pipeline.get(decode2) != null){
 			issueQueue.add(putInQ);
 			pipeline.put(issueQ, pipeline.get(decode2));
 			pipeline.put(decode2, null);
 			putInQ = null;
+		}
 		}
 		if(BranchTaken==true)
 			pipeline.put(issueQ, null);
@@ -288,7 +290,8 @@ public class ApexSimulatorExtended {
 		Iterator<Entry<String, Instructions>> it4 = pipeline.entrySet()
 				.iterator();
 		while (it4.hasNext()) {
-			System.out.println(it4.next());
+			Entry<String, Instructions> temp = it4.next();
+			System.out.println(temp);
 		}
 	}
 
@@ -774,7 +777,11 @@ public class ApexSimulatorExtended {
 							rob.isValid=true;
 							rob.pc = ins.pc_value;
 							
-							insbranch =(ins.ProcessInstruction(InstructionMap.get(ins.pc_value-4), ins.pc_value-4)).instructionString  ;
+							String ins2 = InstructionMap.get(ins.pc_value-4);
+							ins2 = ins2.replace(",", " ");
+							insbranch =ins2;
+							ins2 = ins2.replace(",", " ");
+							insbranch =ins2;
 							ROB.add(rob);
 							putInQ = issue;
 
@@ -792,7 +799,10 @@ public class ApexSimulatorExtended {
 							issue.ins = ins;
 							rob.isValid=true;
 							rob.pc = ins.pc_value;
-							insbranch =(ins.ProcessInstruction(InstructionMap.get(ins.pc_value-4), ins.pc_value-4)).instructionString  ;
+							String ins2 = InstructionMap.get(ins.pc_value-4);
+							ins2 = ins2.replace(",", " ");
+							insbranch =ins2;
+							insbranch =ins2;
 							ROB.add(rob);
 							putInQ = issue;
 
@@ -882,6 +892,7 @@ public class ApexSimulatorExtended {
 						source2ALU = iq.valuesrc2;
 						pipeline.put(execute1, iq.ins);
 						issueQueue.remove(index - 1);
+						pipeline.put(issueQ, null);
 						break;
 					}
 					break;
@@ -1131,6 +1142,9 @@ public class ApexSimulatorExtended {
 	public static void Commit() {
 
 		pipeline.put(branchALU1, null);
+		pipeline.put(writeALU, null);
+		pipeline.put(writeBranch, null);
+		pipeline.put(writeMultiply, null);
 		ROB rob_array[] = null;
 		rob_array = ROB.getQ();
 		ROB rob = new ROB();
