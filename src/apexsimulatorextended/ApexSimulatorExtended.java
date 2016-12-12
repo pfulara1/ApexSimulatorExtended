@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -166,14 +167,14 @@ public class ApexSimulatorExtended {
 
 	public static void Simulate() {
 
-		System.out
-				.println("Please enter the total number of cycles you want to simulate:");
+		System.out.println("Please enter the total number of cycles you want to simulate:");
 		Scanner sc = new Scanner(System.in);
 		int cycles = sc.nextInt();
 		for (int i = 1; i <= cycles; i++) {
 			if (HALTFLAG == true) {
 				break;
 			}
+                        System.out.println("apexsimulatorextended.ApexSimulatorExtended.Simulate():"+ i);
 			printMapTables();
 			printIQ();
 			printROB();
@@ -323,7 +324,12 @@ public class ApexSimulatorExtended {
 
 			if (pipeline.get(fetch) != null) {
 				pipeline.put(decode1, pipeline.get(fetch));
-				pipeline.put(fetch, null);
+				
+                                if(pipeline.get(fetch).opcode.equals("MOVC"))
+                                    {
+                                    String s="Hello";
+                                    }
+                                pipeline.put(fetch, null);
 
 			}
 		}
@@ -342,7 +348,9 @@ public class ApexSimulatorExtended {
 			RenameTable rt = new RenameTable();
 			if (BranchTaken == false && HALTFLAG == false) {
 
-				if (isStall == false) {
+				if (isStall == false) 
+                                
+                                {
 					Instructions ins = pipeline.get(decode1);
 					IQ issue = new IQ();
 					ROB rob = new ROB();
@@ -375,11 +383,14 @@ public class ApexSimulatorExtended {
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							} else {
-								rt.physicalRegister = allocationList.poll()
+								
+                                                            rt.physicalRegister = allocationList.poll()
 										.toString();
-								allocationList
+                                                                allocationList
 										.add(renameTable.get(ins.destRegister).physicalRegister);
-								rt.valid = false;
+                                                                //List tempLst = (List) allocationList;
+                                                                //Collections.sort(tempLst);
+                                                                rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
 
@@ -431,6 +442,8 @@ public class ApexSimulatorExtended {
 										.toString();
 								allocationList
 										.add(renameTable.get(ins.destRegister).physicalRegister);
+                                                            //    List tempLst = (List) allocationList;
+                                                              //  Collections.sort(tempLst);
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
@@ -483,6 +496,8 @@ public class ApexSimulatorExtended {
 										.toString();
 								allocationList
 										.add(renameTable.get(ins.destRegister).physicalRegister);
+                                                                //List tempLst = (List) allocationList;
+                                                                //Collections.sort(tempLst);
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
@@ -535,6 +550,8 @@ public class ApexSimulatorExtended {
 										.toString();
 								allocationList
 										.add(renameTable.get(ins.destRegister).physicalRegister);
+                                                                //List tempLst = (List) allocationList;
+                                                                //Collections.sort(tempLst);
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
@@ -587,6 +604,8 @@ public class ApexSimulatorExtended {
 										.toString();
 								allocationList
 										.add(renameTable.get(ins.destRegister).physicalRegister);
+                                                                //List tempLst = (List) allocationList;
+                                                                //Collections.sort(tempLst);
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
@@ -629,11 +648,22 @@ public class ApexSimulatorExtended {
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 							issue.src2Tag = renameTable.get(ins.src2Register).physicalRegister;
 
-							// Register renaming
-							rt.physicalRegister = allocationList.poll()
-									.toString();
-							rt.valid = false;
-							renameTable.put(ins.destRegister, rt);
+							// Renaming Logic
+							if (renameTable.get(ins.destRegister).physicalRegister == null) {
+								rt.physicalRegister = allocationList.poll()
+										.toString();
+								rt.valid = false;
+								renameTable.put(ins.destRegister, rt);
+							} else {
+								rt.physicalRegister = allocationList.poll()
+										.toString();
+								allocationList
+										.add(renameTable.get(ins.destRegister).physicalRegister);
+                                                                //List tempLst = (List) allocationList;
+                                                                //Collections.sort(tempLst);
+								rt.valid = false;
+								renameTable.put(ins.destRegister, rt);
+							}
 
 							// issue queue processing
 							issue.fuType = 1;
@@ -657,10 +687,21 @@ public class ApexSimulatorExtended {
 						if (!allocationList.isEmpty()
 								&& issueQueue.size() != 12 && ROB.size() != 40) {
 							// Renaming Logic
-							rt.physicalRegister = allocationList.poll()
-									.toString();
-							rt.valid = false;
-							renameTable.put(ins.destRegister, rt);
+							if (renameTable.get(ins.destRegister)==null || renameTable.get(ins.destRegister).physicalRegister == null) {
+								rt.physicalRegister = allocationList.poll()
+										.toString();
+								rt.valid = false;
+								renameTable.put(ins.destRegister, rt);
+							} else {
+								rt.physicalRegister = allocationList.poll()
+										.toString();
+								allocationList
+										.add(renameTable.get(ins.destRegister).physicalRegister);
+                                                                //List tempLst = (List) allocationList;
+                                                                //Collections.sort(tempLst);
+								rt.valid = false;
+								renameTable.put(ins.destRegister, rt);
+							}
 
 							// issue queue processing
 							issue.fuType = 1;
@@ -694,11 +735,22 @@ public class ApexSimulatorExtended {
 
 							issue.src1Tag = renameTable.get(ins.src1Register).physicalRegister;
 
-							// Register renaming
-							rt.physicalRegister = allocationList.poll()
-									.toString();
-							rt.valid = false;
-							renameTable.put(ins.destRegister, rt);
+							// Renaming Logic
+							if (renameTable.get(ins.destRegister)==null ||renameTable.get(ins.destRegister).physicalRegister == null) {
+								rt.physicalRegister = allocationList.poll()
+										.toString();
+								rt.valid = false;
+								renameTable.put(ins.destRegister, rt);
+							} else {
+								rt.physicalRegister = allocationList.poll()
+										.toString();
+								allocationList
+										.add(renameTable.get(ins.destRegister).physicalRegister);
+                                                                //List tempLst = (List) allocationList;
+                                                                //Collections.sort(tempLst);
+								rt.valid = false;
+								renameTable.put(ins.destRegister, rt);
+							}
 
 							// issue queue processing
 							issue.fuType = 3;
@@ -1209,6 +1261,17 @@ public class ApexSimulatorExtended {
 						tempStr = temp.getKey();
 						renameTable.put(tempStr, _rt);
 					}
+                                        allocationList.clear();
+                                        for(int n=0; n < sizeUrf-17; n++)
+                                        {
+                                            allocationList.add("P"+n);
+                                        }
+                                        for(int i=0; i<renameTable.size(); i++)
+                                        {  
+                                            RenameTable _rt2 = new RenameTable();
+                                            _rt2 = renameTable.get("R"+i);
+                                            allocationList.remove(_rt2.physicalRegister);
+                                        }
 					// r_rat.clear();
 
 					// remove the branch instruction from ROB
