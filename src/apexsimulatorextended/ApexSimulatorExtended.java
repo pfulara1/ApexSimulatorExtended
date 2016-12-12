@@ -1041,8 +1041,6 @@ public class ApexSimulatorExtended {
 						source1LSFU = iq.valuesrc1;
 						source2LSFU = iq.literal;
 						resultLSFU1 = source1LSFU + source2LSFU;
-						source1LSFU= 0;
-						source2LSFU= 0;
 						pipeline.put(LSFU1, iq.ins);
 						pipeline.put(issueQ, null);
 						issueQueue.remove(index - 1);
@@ -1051,8 +1049,6 @@ public class ApexSimulatorExtended {
 						source1LSFU = iq.valuesrc1;
 						source2LSFU = iq.valuesrc2;
 						resultLSFU1 = source2LSFU + iq.literal;
-						source1LSFU= 0;
-						source2LSFU= 0;
 						pipeline.put(LSFU1, iq.ins);
 						pipeline.put(issueQ, null);
 						issueQueue.remove(index - 1);
@@ -1079,11 +1075,17 @@ public class ApexSimulatorExtended {
 				memoryResult = memory[resultLSFU1];
 				ins.result = memoryResult;
 				updateIQ(memoryResult, ins);
+
+				source1LSFU= 0;
+				source2LSFU= 0;
 				updateROB(memoryResult, ins, false);
 				break;
 			case "STORE":
 				ins.result = source1LSFU;
 				memory[resultLSFU1] = ins.result;
+
+				source1LSFU= 0;
+				source2LSFU= 0;
 				ROB.remove();
 				break;
 			}
