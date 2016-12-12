@@ -1,23 +1,19 @@
 package apexsimulatorextended;
 
-import common.CircularQueue;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Scanner;
 import java.util.Queue;
+import java.util.Scanner;
 
-import org.w3c.dom.ProcessingInstruction;
+import common.CircularQueue;
 
 public class ApexSimulatorExtended {
 
@@ -32,9 +28,9 @@ public class ApexSimulatorExtended {
 	final static String execute1 = "execute1", execute2 = "execute2";
 	final static String multiply = "multiply", LSFU1 = "LSFU1",
 			LSFU2 = "LSFU2";
-	final static String branchALU1 = "branchALU1";
+	final static String branchALU = "branchALU";
 	final static String writeALU = "writeALU", writeMultiply = "writeMultiply",
-			writeLSFU = "writeLSFU", writeBranch = "writeBranch";
+			writeLSFU = "writeLSFU";
 	public static int ZeroFlag = 0;
 	public static boolean HALTFLAG = false;
 	public static int programCounter = 4000;
@@ -62,12 +58,13 @@ public class ApexSimulatorExtended {
 	public static int resultLSFU1;
 	public static int literal_zero = 0000;
 	public static int source1ALU, source2ALU, source1MUL, source2MUL,
-			source1Branch, source2Branch, source1LSFU, source2LSFU;
+	source1Branch, source2Branch, source1LSFU, source2LSFU;
 	public static int counter = 4;
 	public static boolean branchStall = false;
 	public static IQ putInQ = new IQ();
 	public static boolean loadStoreRobHead = false;
 	public static String insbranch;
+	public static IQ mulIQ;
 
 	// public static int resultForBranch=null;;
 
@@ -174,7 +171,8 @@ public class ApexSimulatorExtended {
 			if (HALTFLAG == true) {
 				break;
 			}
-                        System.out.println("apexsimulatorextended.ApexSimulatorExtended.Simulate():"+ i);
+			System.out.println("apexsimulatorextended.ApexSimulatorExtended.Simulate():"+ i);
+
 			printMapTables();
 			printIQ();
 			printROB();
@@ -271,10 +269,10 @@ public class ApexSimulatorExtended {
 	public static void printMemory() {
 		Scanner sc = new Scanner(System.in);
 		System.out
-				.println("Enter the starting value of memory location to display");
+		.println("Enter the starting value of memory location to display");
 		int i = sc.nextInt();
 		System.out
-				.println("Enter the ending value of memory location to display");
+		.println("Enter the ending value of memory location to display");
 		int j = sc.nextInt();
 
 		for (int x = i; x <= j; x++) {
@@ -324,12 +322,12 @@ public class ApexSimulatorExtended {
 
 			if (pipeline.get(fetch) != null) {
 				pipeline.put(decode1, pipeline.get(fetch));
-				
-                                if(pipeline.get(fetch).opcode.equals("MOVC"))
-                                    {
-                                    String s="Hello";
-                                    }
-                                pipeline.put(fetch, null);
+
+				if(pipeline.get(fetch).opcode.equals("MOVC"))
+				{
+					String s="Hello";
+				}
+				pipeline.put(fetch, null);
 
 			}
 		}
@@ -349,8 +347,8 @@ public class ApexSimulatorExtended {
 			if (BranchTaken == false && HALTFLAG == false) {
 
 				if (isStall == false) 
-                                
-                                {
+
+				{
 					Instructions ins = pipeline.get(decode1);
 					IQ issue = new IQ();
 					ROB rob = new ROB();
@@ -383,14 +381,14 @@ public class ApexSimulatorExtended {
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							} else {
-								
-                                                            rt.physicalRegister = allocationList.poll()
+
+								rt.physicalRegister = allocationList.poll()
 										.toString();
-                                                                allocationList
-										.add(renameTable.get(ins.destRegister).physicalRegister);
-                                                                //List tempLst = (List) allocationList;
-                                                                //Collections.sort(tempLst);
-                                                                rt.valid = false;
+								allocationList
+								.add(renameTable.get(ins.destRegister).physicalRegister);
+								//List tempLst = (List) allocationList;
+								//Collections.sort(tempLst);
+								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
 
@@ -441,9 +439,9 @@ public class ApexSimulatorExtended {
 								rt.physicalRegister = allocationList.poll()
 										.toString();
 								allocationList
-										.add(renameTable.get(ins.destRegister).physicalRegister);
-                                                            //    List tempLst = (List) allocationList;
-                                                              //  Collections.sort(tempLst);
+								.add(renameTable.get(ins.destRegister).physicalRegister);
+								//    List tempLst = (List) allocationList;
+								//  Collections.sort(tempLst);
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
@@ -495,9 +493,9 @@ public class ApexSimulatorExtended {
 								rt.physicalRegister = allocationList.poll()
 										.toString();
 								allocationList
-										.add(renameTable.get(ins.destRegister).physicalRegister);
-                                                                //List tempLst = (List) allocationList;
-                                                                //Collections.sort(tempLst);
+								.add(renameTable.get(ins.destRegister).physicalRegister);
+								//List tempLst = (List) allocationList;
+								//Collections.sort(tempLst);
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
@@ -549,9 +547,9 @@ public class ApexSimulatorExtended {
 								rt.physicalRegister = allocationList.poll()
 										.toString();
 								allocationList
-										.add(renameTable.get(ins.destRegister).physicalRegister);
-                                                                //List tempLst = (List) allocationList;
-                                                                //Collections.sort(tempLst);
+								.add(renameTable.get(ins.destRegister).physicalRegister);
+								//List tempLst = (List) allocationList;
+								//Collections.sort(tempLst);
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
@@ -603,9 +601,9 @@ public class ApexSimulatorExtended {
 								rt.physicalRegister = allocationList.poll()
 										.toString();
 								allocationList
-										.add(renameTable.get(ins.destRegister).physicalRegister);
-                                                                //List tempLst = (List) allocationList;
-                                                                //Collections.sort(tempLst);
+								.add(renameTable.get(ins.destRegister).physicalRegister);
+								//List tempLst = (List) allocationList;
+								//Collections.sort(tempLst);
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
@@ -658,9 +656,9 @@ public class ApexSimulatorExtended {
 								rt.physicalRegister = allocationList.poll()
 										.toString();
 								allocationList
-										.add(renameTable.get(ins.destRegister).physicalRegister);
-                                                                //List tempLst = (List) allocationList;
-                                                                //Collections.sort(tempLst);
+								.add(renameTable.get(ins.destRegister).physicalRegister);
+								//List tempLst = (List) allocationList;
+								//Collections.sort(tempLst);
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
@@ -696,9 +694,9 @@ public class ApexSimulatorExtended {
 								rt.physicalRegister = allocationList.poll()
 										.toString();
 								allocationList
-										.add(renameTable.get(ins.destRegister).physicalRegister);
-                                                                //List tempLst = (List) allocationList;
-                                                                //Collections.sort(tempLst);
+								.add(renameTable.get(ins.destRegister).physicalRegister);
+								//List tempLst = (List) allocationList;
+								//Collections.sort(tempLst);
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
@@ -745,9 +743,9 @@ public class ApexSimulatorExtended {
 								rt.physicalRegister = allocationList.poll()
 										.toString();
 								allocationList
-										.add(renameTable.get(ins.destRegister).physicalRegister);
-                                                                //List tempLst = (List) allocationList;
-                                                                //Collections.sort(tempLst);
+								.add(renameTable.get(ins.destRegister).physicalRegister);
+								//List tempLst = (List) allocationList;
+								//Collections.sort(tempLst);
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
@@ -820,8 +818,6 @@ public class ApexSimulatorExtended {
 							String ins2 = InstructionMap.get(ins.pc_value - 4);
 							ins2 = ins2.replace(",", " ");
 							insbranch = ins2;
-							ins2 = ins2.replace(",", " ");
-							insbranch = ins2;
 							ROB.add(rob);
 							putInQ = issue;
 
@@ -841,7 +837,6 @@ public class ApexSimulatorExtended {
 							rob.pc = ins.pc_value;
 							String ins2 = InstructionMap.get(ins.pc_value - 4);
 							ins2 = ins2.replace(",", " ");
-							insbranch = ins2;
 							insbranch = ins2;
 							ROB.add(rob);
 							putInQ = issue;
@@ -1096,14 +1091,15 @@ public class ApexSimulatorExtended {
 	}
 
 	public static void ExecuteMul() {
-		IQ iq = null;
 		if (!issueQueue.isEmpty()  && counter==4) {
+			IQ iq;
 			index = issueQueue.size();
 			System.out.println(index);
 			for (int i = 0; i <= index; i++) {
 				iq = issueQueue.get(index - 1);
 				if (iq != null && iq.fuType == 2 && iq.src1Valid == true
 						&& iq.src2Valid == true) {
+					mulIQ = iq;
 					issueQueue.remove(index - 1);
 
 					pipeline.put(issueQ, null);
@@ -1113,11 +1109,16 @@ public class ApexSimulatorExtended {
 					index--;
 			}
 		}
-		
+
 		if (pipeline.get(multiply)!=null && counter!=0)
 			counter--;
-		
-		else 	if (iq!=null && counter == 0) {
+
+		else if (pipeline.get(multiply)!=null && counter == 0) {
+			counter--;
+			IQ iq = mulIQ;
+			mulIQ = null;
+			//iq.ins = pipeline.get(multiply);
+			//iq.setIns(pipeline.get(multiply));
 			source1MUL = iq.valuesrc1;
 			source2MUL = iq.valuesrc2;
 			iq.ins.result = source1MUL * source2MUL;
@@ -1127,6 +1128,8 @@ public class ApexSimulatorExtended {
 			} else {
 				ZeroFlag = 0;
 			}
+			source1MUL = 0;
+			source2MUL = 0;
 			updateIQ(iq.ins.result, iq.ins);
 			updateROB(iq.ins.result, iq.ins, false);
 		}
@@ -1191,7 +1194,7 @@ public class ApexSimulatorExtended {
 							break;
 						}
 						pipeline.put(issueQ, null);
-						pipeline.put(branchALU1, iq.ins);
+						pipeline.put(branchALU, iq.ins);
 						break;
 					} else
 						index--;
@@ -1205,9 +1208,8 @@ public class ApexSimulatorExtended {
 
 	public static void Commit() {
 
-		pipeline.put(branchALU1, null);
+		pipeline.put(branchALU, null);
 		pipeline.put(writeALU, null);
-		pipeline.put(writeBranch, null);
 		pipeline.put(writeMultiply, null);
 		pipeline.put(writeLSFU, null);
 		ROB rob_array[] = null;
@@ -1253,7 +1255,7 @@ public class ApexSimulatorExtended {
 						&& (instruction.opcode.equalsIgnoreCase("BNZ")
 								|| instruction.opcode.equalsIgnoreCase("BZ")
 								|| instruction.opcode.equalsIgnoreCase("BAL") || instruction.opcode
-									.equalsIgnoreCase("JUMP"))) {
+								.equalsIgnoreCase("JUMP"))) {
 					ROB.remove();
 				} else if (rob != null && rob.isValid && rob.isBranchTaken) {
 					BranchTaken = false;
@@ -1268,17 +1270,17 @@ public class ApexSimulatorExtended {
 						tempStr = temp.getKey();
 						renameTable.put(tempStr, _rt);
 					}
-                                        allocationList.clear();
-                                        for(int n=0; n < sizeUrf-17; n++)
-                                        {
-                                            allocationList.add("P"+n);
-                                        }
-                                        for(int i=0; i<renameTable.size(); i++)
-                                        {  
-                                            RenameTable _rt2 = new RenameTable();
-                                            _rt2 = renameTable.get("R"+i);
-                                            allocationList.remove(_rt2.physicalRegister);
-                                        }
+					allocationList.clear();
+					for(int n=0; n < sizeUrf-17; n++)
+					{
+						allocationList.add("P"+n);
+					}
+					for(int i=0; i<renameTable.size(); i++)
+					{  
+						RenameTable _rt2 = new RenameTable();
+						_rt2 = renameTable.get("R"+i);
+						allocationList.remove(_rt2.physicalRegister);
+					}
 					// r_rat.clear();
 
 					// remove the branch instruction from ROB
@@ -1352,6 +1354,7 @@ public class ApexSimulatorExtended {
 		if (pipeline.get(execute2) != null) {
 
 			Instructions ins = pipeline.get(execute2);
+			updateIQ(ins.result, ins);
 			unifiedRegisterFile.put(ins.physicalDestRegister, ins.result);
 			renameTable.get(ins.destRegister).valid = true;
 			pipeline.put(writeALU, ins);
@@ -1363,6 +1366,7 @@ public class ApexSimulatorExtended {
 		if (pipeline.get(LSFU2) != null) {
 			Instructions ins = pipeline.get(LSFU2);
 			if (ins.opcode.equalsIgnoreCase("LOAD")) {
+				updateIQ(ins.result, ins);
 				unifiedRegisterFile.put(ins.destRegister, ins.result);
 				renameTable.get(ins.destRegister).valid = true;
 			}
@@ -1372,26 +1376,16 @@ public class ApexSimulatorExtended {
 	}
 
 	public static void WriteBackMUL() {
-		if (pipeline.get(multiply) != null && counter == 0) {
+		if (pipeline.get(multiply) != null && counter == -1) {
 			counter = 4;
 			Instructions ins = pipeline.get(multiply);
+			updateIQ(ins.result, ins);
 			pipeline.put(writeMultiply, ins);
 			pipeline.put(multiply, null);
 			unifiedRegisterFile.put(ins.physicalDestRegister, ins.result);
 			renameTable.get(ins.destRegister).valid = true;
 		}
 
-	}
-
-	public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
-		for (Entry<T, E> entry : map.entrySet()) {
-			String temp = (String) entry.getValue();
-			temp = temp.replaceAll(",", " ");
-			if (Objects.equals(value, temp)) {
-				return entry.getKey();
-			}
-		}
-		return null;
 	}
 
 	public static void changeUrfSize() {
@@ -1423,7 +1417,7 @@ public class ApexSimulatorExtended {
 			System.out.println("All Initialization Complete\n");
 		} else
 			System.out
-					.println("Initialization cannot be done, URF size should be greater than default size:32");
+			.println("Initialization cannot be done, URF size should be greater than default size:32");
 
 	}
 
@@ -1438,11 +1432,10 @@ public class ApexSimulatorExtended {
 		pipeline.put(multiply, null);
 		pipeline.put(LSFU1, null);
 		pipeline.put(LSFU2, null);
-		pipeline.put(branchALU1, null);
+		pipeline.put(branchALU, null);
 		pipeline.put(writeALU, null);
 		pipeline.put(writeMultiply, null);
 		pipeline.put(writeLSFU, null);
-		pipeline.put(writeBranch, null);
 
 	}
 }
