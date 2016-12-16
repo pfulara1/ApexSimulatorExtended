@@ -65,6 +65,11 @@ public class ApexSimulatorExtended {
 	public static String insbranch;
 	public static IQ mulIQ;
 
+	public static int cyclenumber;
+	public static int numberofInsprocessed;
+	public static int stalledDispatch;
+	public static int noissue,loadCommited, storeCommited;
+
 	/*
 	 * This function take the file path as a argument read the file line by line
 	 * and put the instructions in an Hash Map
@@ -103,8 +108,9 @@ public class ApexSimulatorExtended {
 			System.out.print("Press 6 Print_ROB\n");
 			System.out.print("Press 7 Print_URF\n");
 			System.out.print("Press 8 Print_Memory <a1> <a2>\n");
-			System.out.print("Press 9 Print_Stats\n");
-			System.out.print("Press 10 Exit\n");
+			System.out.print("Press 9 Print_Pipeline\n");
+			System.out.println("Press 10 Print IPC");
+			System.out.print("Press 11 Exit\n");
 
 			System.out.print("Please Enter your choice:\n\n");
 
@@ -147,15 +153,58 @@ public class ApexSimulatorExtended {
 				break;
 
 			case 9:
-				printStats();
+				printPipeline();
 				break;
 
 			case 10:
+				printStats();
+				break;
+
+			case 11:
 				System.exit(1);
 				sc.close();
 				break;
 			}
 		} while (true);
+	}
+
+	private static void printStats() {
+		//		if(pipeline.get(fetch)!=null)
+		//			numberofInsprocessed++;
+		//		if(pipeline.get(execute1)!=null)
+		//			numberofInsprocessed++;
+		//		if(pipeline.get(execute2)!=null)
+		//			numberofInsprocessed++;
+		//		if(pipeline.get(issueQ)!=null)
+		//			numberofInsprocessed++;
+		//		if(pipeline.get(execute1)!=null)
+		//			numberofInsprocessed++;
+		//		if(pipeline.get(execute2)!=null)
+		//			numberofInsprocessed++;
+		//		if(pipeline.get(multiply)!=null)
+		//			numberofInsprocessed++;
+		//		if(pipeline.get(branchALU)!=null)
+		//			numberofInsprocessed++;
+		//		if(pipeline.get(LSFU1)!=null)
+		//			numberofInsprocessed++;
+		//		if(pipeline.get(LSFU2)!=null)
+		//			numberofInsprocessed++;
+		//		if(pipeline.get(writeALU)!=null)
+		//			numberofInsprocessed++;
+		//		if(pipeline.get(writeLSFU)!=null)
+		//			numberofInsprocessed++;
+		//		if(pipeline.get(writeMultiply)!=null)
+		//			numberofInsprocessed++;
+		Float resultipc = (float) ((float) (numberofInsprocessed)/(float)cyclenumber);
+		System.out.println("Number of ins:"+numberofInsprocessed);
+		System.out.println("Number of cycles:"+ cyclenumber);
+		System.out.println("IPC:" + resultipc);
+		resultipc = (float) (numberofInsprocessed/(7+numberofInsprocessed-1));
+		System.out.println("Dispatch stalled:"+resultipc);
+		System.out.println("No issue:" + noissue);
+		System.out.println("LOAD committed:"+ loadCommited);
+		System.out.println("STORE committed:"+ storeCommited);
+
 	}
 
 	public static void Initialize(String path) throws IOException {
@@ -192,7 +241,8 @@ public class ApexSimulatorExtended {
 			if (HALTFLAG == true) {
 				break;
 			}
-			System.out.println("Cycle Number:" + i);
+			cyclenumber ++;
+			//			System.out.println("Cycle Number:" + i);
 
 			Commit();
 			WriteBackALU();
@@ -279,7 +329,7 @@ public class ApexSimulatorExtended {
 		System.out.println();
 	}
 
-	public static void printStats() {
+	public static void printPipeline() {
 
 		// Print pipeline
 		System.out.println("\nPipeline:");
@@ -519,7 +569,7 @@ public class ApexSimulatorExtended {
 								for (int i : array) {
 									allocationList.add("P" + i);
 								}
-*/
+								 */
 								rt.valid = false;
 								renameTable.put(ins.destRegister, rt);
 							}
@@ -1051,6 +1101,7 @@ public class ApexSimulatorExtended {
 					iq = issueQueue.get(index - 1);
 					if (iq != null && iq.fuType == 4 && iq.src1Valid == true && iq.src2Valid == true) {
 						issueQueue.remove(index - 1);
+
 						switch (iq.ins.opcode) {
 						case "BZ":
 							if (ZeroFlag == 1) {
@@ -1061,6 +1112,7 @@ public class ApexSimulatorExtended {
 								BranchPcValue = 0;
 								BranchTaken = true;
 								updateROB(0, iq.ins, true);
+
 							}
 							break;
 						case "BNZ":
@@ -1072,6 +1124,7 @@ public class ApexSimulatorExtended {
 								BranchPcValue = 0;
 								BranchTaken = true;
 								updateROB(0, iq.ins, true);
+
 							}
 							break;
 						case "JUMP":
@@ -1082,6 +1135,7 @@ public class ApexSimulatorExtended {
 							programCounter = registerValue + iq.ins.literal;
 							BranchTaken = true;
 							updateROB(0, iq.ins, true);
+
 							break;
 						case "BAL":
 							int Value = 0;
@@ -1090,9 +1144,12 @@ public class ApexSimulatorExtended {
 							programCounter = Value + iq.ins.literal;
 							BranchTaken = true;
 							updateROB(0, iq.ins, true);
+
 							break;
 						case "HALT":
 							updateROB(0, iq.ins, true);
+
+
 							break;
 						}
 						pipeline.put(issueQ, null);
@@ -1153,6 +1210,7 @@ public class ApexSimulatorExtended {
 			}
 			String opcode = ins.opcode;
 			int result;
+
 			switch (opcode) {
 			case "ADD":
 				result = source1ALU + source2ALU;
@@ -1165,6 +1223,7 @@ public class ApexSimulatorExtended {
 				ins.result = result;
 				updateIQ(result, ins);
 				updateROB(result, ins, false);
+
 				source1ALU = 0;
 				source2ALU = 0;
 				break;
@@ -1180,6 +1239,7 @@ public class ApexSimulatorExtended {
 				ins.result = result;
 				updateIQ(result, ins);
 				updateROB(result, ins, false);
+
 				break;
 			case "AND":
 				result = source1ALU & source2ALU;
@@ -1188,6 +1248,7 @@ public class ApexSimulatorExtended {
 				source2ALU = 0;
 				updateIQ(result, ins);
 				updateROB(result, ins, false);
+
 				break;
 			case "OR":
 				result = source1ALU | source2ALU;
@@ -1196,6 +1257,7 @@ public class ApexSimulatorExtended {
 				source2ALU = 0;
 				updateIQ(result, ins);
 				updateROB(result, ins, false);
+
 				break;
 			case "EX-OR":
 				result = source1ALU ^ source2ALU;
@@ -1204,6 +1266,7 @@ public class ApexSimulatorExtended {
 				source2ALU = 0;
 				updateIQ(result, ins);
 				updateROB(result, ins, false);
+
 				break;
 			case "MOVC":
 				result = literal_zero + source1ALU;
@@ -1212,6 +1275,7 @@ public class ApexSimulatorExtended {
 				source2ALU = 0;
 				updateIQ(result, ins);
 				updateROB(result, ins, false);
+
 				break;
 			}
 
@@ -1262,23 +1326,26 @@ public class ApexSimulatorExtended {
 			switch (opcode) {
 			case "LOAD":
 				memoryResult = memory[resultLSFU1];
-				
+
 				ins.result = memoryResult;
 				updateIQ(memoryResult, ins);
 
 				source1LSFU = 0;
 				source2LSFU = 0;
 				resultLSFU1 = 0;
+
 				updateROB(memoryResult, ins, false);
 				break;
 			case "STORE":
 				ins.result = source1LSFU;
-				
+
 				memory[resultLSFU1] = ins.result;
 
 				resultLSFU1 = 0;
 				source1LSFU = 0;
 				source2LSFU = 0;
+				storeCommited++;
+				numberofInsprocessed++;
 				ROB.remove();
 				break;
 			}
@@ -1328,6 +1395,7 @@ public class ApexSimulatorExtended {
 			source2MUL = 0;
 			updateIQ(iq.ins.result, iq.ins);
 			updateROB(iq.ins.result, iq.ins, false);
+
 		}
 	}
 
@@ -1385,7 +1453,7 @@ public class ApexSimulatorExtended {
 			String ins = InstructionMap.get(rob.pc);
 			Instructions instruction = new Instructions();
 			instruction = instruction.ProcessInstruction(ins, rob.pc);
-
+			
 			if (instruction.opcode.equalsIgnoreCase("STORE")) {
 				loadStoreRobHead = true;
 			} else if (instruction.opcode.equalsIgnoreCase("LOAD")) {
@@ -1396,10 +1464,20 @@ public class ApexSimulatorExtended {
 					rt.physicalRegister = rob.physicalRegister;
 					rt.valid = true;
 					r_rat.put(rob.destinationRegsiter, rt);
+					loadCommited++;
+					numberofInsprocessed++;
 					ROB.remove();
 				}
 			} else if (instruction.opcode.equalsIgnoreCase("HALT")) {
+				numberofInsprocessed++;
 				HALTFLAG = true;
+				initializePipeline();
+				for (int i = 0; i < rob_array.length; i++) 
+				{
+					if (rob_array[i] != null)
+						ROB.remove();
+				}
+				if(!ROB.isEmpty())
 				ROB.remove();
 			} else {
 				RenameTable rt = new RenameTable();
@@ -1410,11 +1488,13 @@ public class ApexSimulatorExtended {
 					rt.physicalRegister = rob.physicalRegister;
 					rt.valid = true;
 					r_rat.put(rob.destinationRegsiter, rt);
+					numberofInsprocessed++;
 					ROB.remove();
 				} else if (rob != null && rob.isValid && !rob.isBranchTaken
 						&& (instruction.opcode.equalsIgnoreCase("BNZ") || instruction.opcode.equalsIgnoreCase("BZ")
 								|| instruction.opcode.equalsIgnoreCase("BAL")
 								|| instruction.opcode.equalsIgnoreCase("JUMP"))) {
+					numberofInsprocessed++;
 					ROB.remove();
 				} else if (rob != null && rob.isValid && rob.isBranchTaken) {
 					BranchTaken = false;
